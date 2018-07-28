@@ -11,22 +11,19 @@ VRC6 expansion sound chip emulators.
 Licensed under the GNU Lesser General Public License (LGPL); see LGPL.TXT.
 Copyright (C) 2003-2005 Shay Green.
 
-Website: http://www.slack.net/~ant/libs/
-Forum  : http://groups-beta.google.com/group/blargg-sound-libs
-Contact: hotpop.com@blargg (swap to e-mail)
+* Website: http://www.slack.net/~ant/libs/
+* Forum  : http://groups-beta.google.com/group/blargg-sound-libs
+* Contact: `hotpop.com@blargg` (swap to e-mail)
 
 
 # Getting Started
-Build a program consisting of demo.cpp, Simple_Apu.cpp, and all source files in
-the nes_apu/ directory. Running the program should generate a WAVE sound file
-"out.wav" of random tones.
+Build a program consisting of demo.cpp, Simple_Apu.cpp, and all source files in the `nes_apu/` directory. Running the program should generate a WAVE sound file "out.wav" of random tones.
 
-See notes.txt for more information, and respective header (.h) files for
-reference. Visit the discussion forum to get assistance.
+See notes.txt for more information, and respective header (.h) files for reference. Visit the discussion forum to get assistance.
 
 
 # Files
-notes.txt                  General notes about the library
+```notes.txt                  General notes about the library
 changes.txt                Changes since previous releases
 LICENSE                    GNU Lesser General Public License
 
@@ -61,4 +58,4 @@ nes_apu/                   Core library modules
   Multi_Buffer.h
   Multi_Buffer.cpp
 
-boost/                     Substitute for boost library if it's unavailable
+boost/                     Substitute for boost library if it's unavailable```
