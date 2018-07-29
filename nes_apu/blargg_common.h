@@ -11,9 +11,9 @@
 
 // Allow prefix configuration file *which can re-include blargg_common.h*
 // (probably indirectly).
-#ifdef HAVE_CONFIG_H
+#ifdef BLARGG_HAVE_CONFIG_H
 	#undef BLARGG_COMMON_H
-	#include "config.h"
+	#include "blargg_config.h"
 	#define BLARGG_COMMON_H
 #endif
 
@@ -127,6 +127,7 @@
 
 // Common standard headers
 #if BLARGG_COMPILER_HAS_NAMESPACE
+	#include <climits>
 	#include <cstddef>
 	#include <cassert>
 	#include <new>
