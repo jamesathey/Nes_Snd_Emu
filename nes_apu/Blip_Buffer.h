@@ -20,7 +20,7 @@ typedef BOOST::int16_t blip_sample_t;
 // Make buffer as large as possible (currently about 65000 samples)
 const int blip_default_length = 0;
 
-class Blip_Buffer {
+class DLLEXPORT Blip_Buffer {
 public:
 	// Construct an empty buffer.
 	Blip_Buffer();

@@ -14,7 +14,7 @@ typedef unsigned cpu_addr_t; // 16-bit memory address
 struct apu_snapshot_t;
 class Nonlinear_Buffer;
 
-class Nes_Apu {
+class DLLEXPORT Nes_Apu {
 public:
 	Nes_Apu();
 	~Nes_Apu();

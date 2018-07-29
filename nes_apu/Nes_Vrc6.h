@@ -10,7 +10,7 @@
 
 struct vrc6_snapshot_t;
 
-class Nes_Vrc6 {
+class DLLEXPORT Nes_Vrc6 {
 public:
 	Nes_Vrc6();
 	~Nes_Vrc6();
