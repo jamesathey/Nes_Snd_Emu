@@ -100,6 +100,11 @@ private:
 	friend class Nes_Nonlinearizer;
 	void enable_nonlinear( double volume );
 private:
+
+#ifdef _MSC_VER
+#  pragma warning( push )
+#  pragma warning( disable: 4251 )
+#endif
 	// noncopyable
 	Nes_Apu( const Nes_Apu& );
 	Nes_Apu& operator = ( const Nes_Apu& );
@@ -128,6 +133,10 @@ private:
 	void state_restored();
 	
 	friend struct Nes_Dmc;
+
+#ifdef _MSC_VER
+#  pragma warning( pop )
+#endif
 };
 
 inline void Nes_Apu::osc_output( int osc, Blip_Buffer* buf )
