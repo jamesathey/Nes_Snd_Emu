@@ -30,3 +30,14 @@
 *.exe
 *.out
 *.app
+CMakeFiles/
+Nes_Snd_Emu.dir/
+Debug/
+Release/
+RelWithDebInfo/
+cmake_install.cmake
+Nes_Snd_Emu.sln
+Nes_Snd_Emu.vcxproj.filters
+Nes_Snd_Emu.vcxproj
+ALL_BUILD.vcxproj.filters
+ALL_BUILD.vcxproj
