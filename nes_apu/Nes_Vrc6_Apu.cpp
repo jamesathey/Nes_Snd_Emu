@@ -1,33 +1,27 @@
+// Nes_Snd_Emu $vers. http://www.slack.net/~ant/
 
-// Nes_Snd_Emu 0.1.7. http://www.slack.net/~ant/libs/
+#include "Nes_Vrc6_Apu.h"
 
-#include "Nes_Vrc6.h"
-
-/* Copyright (C) 2003-2005 Shay Green. This module is free software; you
+/* Copyright (C) 2003-2006 Shay Green. This module is free software; you
 can redistribute it and/or modify it under the terms of the GNU Lesser
 General Public License as published by the Free Software Foundation; either
 version 2.1 of the License, or (at your option) any later version. This
 module is distributed in the hope that it will be useful, but WITHOUT ANY
 WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for
-more details. You should have received a copy of the GNU Lesser General
-Public License along with this module; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
+FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+details. You should have received a copy of the GNU Lesser General Public
+License along with this module; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA */
 
-#include BLARGG_SOURCE_BEGIN
+#include "blargg_source.h"
 
-Nes_Vrc6::Nes_Vrc6()
+void Nes_Vrc6_Apu::set_output( Blip_Buffer* buf )
 {
-	output( NULL );
-	volume( 1.0 );
-	reset();
+	for ( int i = 0; i < osc_count; ++i )
+		set_output( i, buf );
 }
 
-Nes_Vrc6::~Nes_Vrc6()
-{
-}
-
-void Nes_Vrc6::reset()
+void Nes_Vrc6_Apu::reset()
 {
 	last_time = 0;
 	for ( int i = 0; i < osc_count; i++ )
@@ -42,26 +36,14 @@ void Nes_Vrc6::reset()
 	}
 }
 
-void Nes_Vrc6::volume( double v )
+Nes_Vrc6_Apu::Nes_Vrc6_Apu()
 {
-	v *= 0.0967 * 2;
-	saw_synth.volume( v );
-	square_synth.volume( v * 0.5 );
+	set_output( NULL );
+	volume( 1.0 );
+	reset();
 }
 
-void Nes_Vrc6::treble_eq( blip_eq_t const& eq )
-{
-	saw_synth.treble_eq( eq );
-	square_synth.treble_eq( eq );
-}
-
-void Nes_Vrc6::output( Blip_Buffer* buf )
-{
-	for ( int i = 0; i < osc_count; i++ )
-		osc_output( i, buf );
-}
-
-void Nes_Vrc6::run_until( cpu_time_t time )
+void Nes_Vrc6_Apu::run_until( blip_time_t time )
 {
 	require( time >= last_time );
 	run_square( oscs [0], time );
@@ -70,7 +52,7 @@ void Nes_Vrc6::run_until( cpu_time_t time )
 	last_time = time;
 }
 
-void Nes_Vrc6::write_osc( cpu_time_t time, int osc_index, int reg, int data )
+void Nes_Vrc6_Apu::write_osc( blip_time_t time, int osc_index, int reg, int data )
 {
 	require( (unsigned) osc_index < osc_count );
 	require( (unsigned) reg < reg_count );
@@ -79,16 +61,18 @@ void Nes_Vrc6::write_osc( cpu_time_t time, int osc_index, int reg, int data )
 	oscs [osc_index].regs [reg] = data;
 }
 
-void Nes_Vrc6::end_frame( cpu_time_t time )
+void Nes_Vrc6_Apu::end_frame( blip_time_t time )
 {
 	if ( time > last_time )
 		run_until( time );
+	
+	assert( last_time >= time );
 	last_time -= time;
-	assert( last_time >= 0 );
 }
 
-void Nes_Vrc6::save_snapshot( vrc6_snapshot_t* out ) const
+void Nes_Vrc6_Apu::save_state( vrc6_apu_state_t* out ) const
 {
+	assert( sizeof (vrc6_apu_state_t) == 20 );
 	out->saw_amp = oscs [2].amp;
 	for ( int i = 0; i < osc_count; i++ )
 	{
@@ -101,7 +85,7 @@ void Nes_Vrc6::save_snapshot( vrc6_snapshot_t* out ) const
 	}
 }
 
-void Nes_Vrc6::load_snapshot( vrc6_snapshot_t const& in )
+void Nes_Vrc6_Apu::load_state( vrc6_apu_state_t const& in )
 {
 	reset();
 	oscs [2].amp = in.saw_amp;
@@ -118,9 +102,7 @@ void Nes_Vrc6::load_snapshot( vrc6_snapshot_t const& in )
 		oscs [2].phase = 1;
 }
 
-#include BLARGG_ENABLE_OPTIMIZER
-
-void Nes_Vrc6::run_square( Vrc6_Osc& osc, cpu_time_t end_time )
+void Nes_Vrc6_Apu::run_square( Vrc6_Osc& osc, blip_time_t end_time )
 {
 	Blip_Buffer* output = osc.output;
 	if ( !output )
@@ -133,10 +115,11 @@ void Nes_Vrc6::run_square( Vrc6_Osc& osc, cpu_time_t end_time )
 	int gate = osc.regs [0] & 0x80;
 	int duty = ((osc.regs [0] >> 4) & 7) + 1;
 	int delta = ((gate || osc.phase < duty) ? volume : 0) - osc.last_amp;
-	cpu_time_t time = last_time;
+	blip_time_t time = last_time;
 	if ( delta )
 	{
 		osc.last_amp += delta;
+		output->set_modified();
 		square_synth.offset( time, delta, output );
 	}
 	
@@ -148,6 +131,7 @@ void Nes_Vrc6::run_square( Vrc6_Osc& osc, cpu_time_t end_time )
 		if ( time < end_time )
 		{
 			int phase = osc.phase;
+			output->set_modified();
 			
 			do
 			{
@@ -173,16 +157,17 @@ void Nes_Vrc6::run_square( Vrc6_Osc& osc, cpu_time_t end_time )
 	}
 }
 
-void Nes_Vrc6::run_saw( cpu_time_t end_time )
+void Nes_Vrc6_Apu::run_saw( blip_time_t end_time )
 {
 	Vrc6_Osc& osc = oscs [2];
 	Blip_Buffer* output = osc.output;
 	if ( !output )
 		return;
+	output->set_modified();
 	
 	int amp = osc.amp;
 	int amp_step = osc.regs [0] & 0x3F;
-	cpu_time_t time = last_time;
+	blip_time_t time = last_time;
 	int last_amp = osc.last_amp;
 	if ( !(osc.regs [2] & 0x80) || !(amp_step | amp) )
 	{

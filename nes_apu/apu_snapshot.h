@@ -7,6 +7,7 @@
 #define APU_SNAPSHOT_H
 
 #include "blargg_common.h"
+#include "boost/static_assert.hpp"
 
 struct apu_snapshot_t
 {
