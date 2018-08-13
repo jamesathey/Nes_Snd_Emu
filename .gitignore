@@ -41,3 +41,5 @@ Nes_Snd_Emu.vcxproj.filters
 Nes_Snd_Emu.vcxproj
 ALL_BUILD.vcxproj.filters
 ALL_BUILD.vcxproj
+CMakeScripts
+*.xcodeproj
