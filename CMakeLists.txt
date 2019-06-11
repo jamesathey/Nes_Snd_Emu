@@ -27,6 +27,7 @@ SET(NES_SND_EMU_SOURCES
 	nes_apu/Nes_Apu.cpp
 	nes_apu/Nes_Fds_Apu.cpp
 	nes_apu/Nes_Fme7_Apu.cpp
+	nes_apu/Nes_Mmc5_Apu.cpp
 	nes_apu/Nes_Namco_Apu.cpp
 	nes_apu/Nes_Oscs.cpp
 	nes_apu/Nes_Vrc6_Apu.cpp
