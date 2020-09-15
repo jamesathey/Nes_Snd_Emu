@@ -67,10 +67,6 @@ arithmetic on smaller types. */
 	#error "int must be at least 32 bits"
 #endif
 
-// In case compiler doesn't support these properly. Used rarely.
-#define STATIC_CAST(T,expr) static_cast<T> (expr)
-#define CONST_CAST( T,expr) const_cast<T> (expr)
-
 // User configuration can override the above macros if necessary
 #include "blargg_config.h"
 
