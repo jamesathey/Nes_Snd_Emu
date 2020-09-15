@@ -40,15 +40,15 @@ jobs:
         buildDirectory: '${{ runner.workspace }}/b/unixmakefiles'
         cmakeAppendedArgs: '-G"Unix Makefiles"'
         
-    - name: 'CMake+Visual Studio 15 2017'
+    - name: 'CMake+Visual Studio 16 2019'
       uses: lukka/run-cmake@v2
       if: contains( matrix.os, 'windows')
       with:
         cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
         cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
         useVcpkgToolchainFile: true
-        buildDirectory: '${{ runner.workspace }}/b/vs2017'
-        cmakeAppendedArgs: '-G"Visual Studio 15 2017"'
+        buildDirectory: '${{ runner.workspace }}/b/vs2019'
+        cmakeAppendedArgs: '-G"Visual Studio 16 2019"'
   
     - name: 'CMake+XCode'
       uses: lukka/run-cmake@v2
