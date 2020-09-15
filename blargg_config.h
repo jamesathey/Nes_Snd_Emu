@@ -15,6 +15,4 @@
 #define DLLEXPORT
 #endif // BLARGG_DYNAMIC
 
-#define HAVE_STDINT_H 1
-
 #endif // BLARGG_CONFIG_H

@@ -39,7 +39,7 @@ Blip_Buffer::Blip_Buffer()
 		
 		// casting truncates and sign-extends
 		i = 0x18000;
-		assert( (BOOST::int16_t) i == -0x8000 );
+		assert( (int16_t) i == -0x8000 );
 	#endif
 	
 	clear();

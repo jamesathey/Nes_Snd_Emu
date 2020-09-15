@@ -37,14 +37,14 @@ private:
 
 	struct Vrc7_Osc
 	{
-		BOOST::uint8_t regs [3];
+		uint8_t regs [3];
 		Blip_Buffer* output;
 		int last_amp;
 	};
 
 	Vrc7_Osc oscs [osc_count];
-	BOOST::uint8_t kon;
-	BOOST::uint8_t inst [8];
+	uint8_t kon;
+	uint8_t inst [8];
 	void* opll;
 	int addr;
 	blip_time_t next_time;
@@ -68,10 +68,10 @@ private:
 
 struct vrc7_snapshot_t
 {
-	BOOST::uint8_t latch;
-	BOOST::uint8_t inst [8];
-	BOOST::uint8_t regs [6] [3];
-	BOOST::uint8_t delay;
+	uint8_t latch;
+	uint8_t inst [8];
+	uint8_t regs [6] [3];
+	uint8_t delay;
 };
 
 inline void Nes_Vrc7_Apu::set_output( int i, Blip_Buffer* buf )
