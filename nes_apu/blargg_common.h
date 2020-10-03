@@ -15,13 +15,6 @@ typedef const char* blargg_err_t; // 0 on success, otherwise error string
 // Success; no error
 blargg_err_t const blargg_ok = 0;
 
-// BLARGG_RESTRICT: equivalent to C99's restrict, where supported
-#if __GNUC__ >= 3 || _MSC_VER >= 1100
-	#define BLARGG_RESTRICT __restrict
-#else
-	#define BLARGG_RESTRICT
-#endif
-
 /* BLARGG_4CHAR('a','b','c','d') = 'abcd' (four character integer constant).
 I don't just use 'abcd' because that's implementation-dependent. */
 #define BLARGG_4CHAR( a, b, c, d ) \

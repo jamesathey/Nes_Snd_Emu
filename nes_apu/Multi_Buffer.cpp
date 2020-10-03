@@ -223,7 +223,7 @@ void Stereo_Mixer::mix_mono( blip_sample_t out_ [], int count )
 	int center_sum = bufs [2]->integrator();
 	
 	typedef blip_sample_t stereo_blip_sample_t [stereo];
-	stereo_blip_sample_t* BLARGG_RESTRICT out = (stereo_blip_sample_t*) out_ + count;
+	stereo_blip_sample_t* __restrict out = (stereo_blip_sample_t*) out_ + count;
 	int offset = -count;
 	do
 	{
@@ -244,7 +244,7 @@ void Stereo_Mixer::mix_mono( blip_sample_t out_ [], int count )
 
 void Stereo_Mixer::mix_stereo( blip_sample_t out_ [], int count )
 {
-	blip_sample_t* BLARGG_RESTRICT out = out_ + count * stereo;
+	blip_sample_t* __restrict out = out_ + count * stereo;
 	
 	// do left + center and right + center separately to reduce register load
 	Tracked_Blip_Buffer* const* buf = &bufs [2];

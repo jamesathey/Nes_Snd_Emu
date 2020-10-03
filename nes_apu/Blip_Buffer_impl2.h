@@ -16,7 +16,7 @@ int const blip_sample_bits = 30;
 
 // Begins reading from buffer. Name should be unique to the current {} block.
 #define BLIP_READER_BEGIN( name, blip_buffer ) \
-	const Blip_Buffer::delta_t* BLARGG_RESTRICT name##_reader_buf = (blip_buffer).read_pos();\
+	const Blip_Buffer::delta_t* __restrict name##_reader_buf = (blip_buffer).read_pos();\
 	int name##_reader_accum = (blip_buffer).integrator()
 
 // Gets value to pass to BLIP_READER_NEXT()
@@ -91,7 +91,7 @@ inline void Blip_Synth<quality,range>::offset_resampled( blip_resampled_time_t t
 	int const half_width = quality / 2;
 #endif
 	
-	Blip_Buffer::delta_t* BLARGG_RESTRICT buf = blip_buf->delta_at( time );
+	Blip_Buffer::delta_t* __restrict buf = blip_buf->delta_at( time );
 	
 	delta *= impl.delta_factor;
 
@@ -121,7 +121,7 @@ inline void Blip_Synth<quality,range>::offset_resampled( blip_resampled_time_t t
 	int const fwd = -quality / 2;
 	int const rev = fwd + quality - 2;
 	
-	coeff_t const* BLARGG_RESTRICT imp = (coeff_t const*) ((char const*) phases + phase);
+	coeff_t const* __restrict imp = (coeff_t const*) ((char const*) phases + phase);
 	int const phase2 = phase + phase - (blip_res - 1) * half_width * sizeof (coeff_t);
 	
 	#define BLIP_MID_IMP imp = (coeff_t const*) ((char const*) imp - phase2);

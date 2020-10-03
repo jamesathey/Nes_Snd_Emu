@@ -164,7 +164,7 @@ int Blip_Buffer::read_samples( blip_sample_t out_ [], int max_samples, bool ster
 		delta_t const* reader = read_pos() + count;
 		int reader_sum = integrator();
 		
-		blip_sample_t* BLARGG_RESTRICT out = out_ + count;
+		blip_sample_t* __restrict out = out_ + count;
 		if ( stereo )
 			out += count;
 		int offset = -count;
