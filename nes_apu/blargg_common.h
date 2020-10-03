@@ -50,23 +50,6 @@ development, it expands to "= 0", allowing detection of missing overrides. */
 
 BLARGG_NAMESPACE_BEGIN
 
-/* BLARGG_DEPRECATED [_TEXT] for any declarations/text to be removed in a
-future version. In GCC, we can let the compiler warn. In other compilers,
-we strip it out unless BLARGG_LEGACY is true. */
-#if BLARGG_LEGACY
-	// Allow old client code to work without warnings
-	#define BLARGG_DEPRECATED_TEXT( text ) text
-	#define BLARGG_DEPRECATED(      text ) text
-#elif __GNUC__ >= 4
-	// In GCC, we can mark declarations and let the compiler warn
-	#define BLARGG_DEPRECATED_TEXT( text ) text
-	#define BLARGG_DEPRECATED(      text ) __attribute__ ((deprecated)) text
-#else
-	// By default, deprecated items are removed, to avoid use in new code
-	#define BLARGG_DEPRECATED_TEXT( text )
-	#define BLARGG_DEPRECATED(      text )
-#endif
-
 /* My code is not written with exceptions in mind, so either uses new (nothrow)
 OR overrides operator new in my classes. The former is best since clients
 creating objects will get standard exceptions on failure, but that causes it

@@ -98,12 +98,6 @@ public:
 public:
 	Nes_Apu();
 	BLARGG_DISABLE_NOTHROW
-	// Use set_output() in place of these
-	BLARGG_DEPRECATED( void output    (        Blip_Buffer* c ); )
-	BLARGG_DEPRECATED( void osc_output( int i, Blip_Buffer* c ); )
-	
-	BLARGG_DEPRECATED_TEXT( enum { start_addr = 0x4000 }; )
-	BLARGG_DEPRECATED_TEXT( enum { end_addr   = 0x4017 }; )
 	
 	blargg_callback<int (*)( void* user_data, int addr )> dmc_reader;
 	blargg_callback<void (*)( void* user_data )> irq_notifier;
@@ -183,11 +177,5 @@ inline Nes_Apu::nes_time_t Nes_Dmc::next_read_time() const
 }
 
 inline Nes_Apu::nes_time_t Nes_Apu::next_dmc_read_time() const { return dmc.next_read_time(); }
-
-BLARGG_DEPRECATED( typedef int      nes_time_t; ) // use your own typedef
-BLARGG_DEPRECATED( typedef unsigned nes_addr_t; ) // use your own typedef
-
-BLARGG_DEPRECATED_TEXT( inline void Nes_Apu::output    (        Blip_Buffer* c ) { set_output( c    ); } )
-BLARGG_DEPRECATED_TEXT( inline void Nes_Apu::osc_output( int i, Blip_Buffer* c ) { set_output( i, c ); } )
 
 #endif

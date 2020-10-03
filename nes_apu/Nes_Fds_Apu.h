@@ -31,9 +31,6 @@ public:
 	
 	void set_output( int index, Blip_Buffer* center,
 			Blip_Buffer* left_ignored = NULL, Blip_Buffer* right_ignored = NULL );
-	BLARGG_DEPRECATED_TEXT( enum { start_addr = 0x4040 }; )
-	BLARGG_DEPRECATED_TEXT( enum { end_addr = 0x4092 }; )
-	BLARGG_DEPRECATED_TEXT( enum { reg_count = end_addr - start_addr + 1 }; )
 	void osc_output( int, Blip_Buffer* );
 private:
 	enum { wave_size       = 0x40 };

@@ -4,15 +4,6 @@
 #ifndef BLIP_BUFFER_IMPL2_H
 #define BLIP_BUFFER_IMPL2_H
 
-//// Compatibility
-
-BLARGG_DEPRECATED( int const blip_low_quality  =  8; )
-BLARGG_DEPRECATED( int const blip_med_quality  =  8; )
-BLARGG_DEPRECATED( int const blip_good_quality = 12; )
-BLARGG_DEPRECATED( int const blip_high_quality = 16; )
-
-BLARGG_DEPRECATED( int const blip_sample_max = 32767; )
-
 // Number of bits in raw sample that covers normal output range. Less than 32 bits to give
 // extra amplitude range. That is,
 // +1 << (blip_sample_bits-1) = +1.0

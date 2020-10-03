@@ -19,9 +19,6 @@ public:
 	
 	enum { exram_size = 1024 };
 	unsigned char exram [exram_size];
-	
-	BLARGG_DEPRECATED_TEXT( enum { start_addr = 0x5000 }; )
-	BLARGG_DEPRECATED_TEXT( enum { end_addr   = 0x5015 }; )
 };
 
 #endif
