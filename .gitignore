@@ -47,3 +47,5 @@ CMakeCache.txt
 ZERO_CHECK.vcxproj
 ZERO_CHECK.vcxproj.filters
 .vs/
+*.filters
+SDL_Sound_Queue.vcxproj
