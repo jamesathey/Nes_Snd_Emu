@@ -29,7 +29,7 @@ public:
 		Blip_Buffer* left;
 		Blip_Buffer* right;
 	};
-	virtual channel_t channel( int index )              BLARGG_PURE( ; )
+	virtual channel_t channel(int index);
 	
 	// Number of samples per output frame (1 = mono, 2 = stereo)
 	int samples_per_frame() const;
@@ -39,15 +39,15 @@ public:
 	unsigned channels_changed_count()                   { return channels_changed_count_; }
 	
 	// See Blip_Buffer.h
-	virtual blargg_err_t set_sample_rate( int rate, int msec = blip_default_length ) BLARGG_PURE( ; )
+	virtual blargg_err_t set_sample_rate(int rate, int msec = blip_default_length);
 	int sample_rate() const;
 	int length() const;
-	virtual void clock_rate( int )                      BLARGG_PURE( ; )
-	virtual void bass_freq( int )                       BLARGG_PURE( ; )
-	virtual void clear()                                BLARGG_PURE( ; )
-	virtual void end_frame( blip_time_t )               BLARGG_PURE( ; )
-	virtual int read_samples( blip_sample_t [], int )   BLARGG_PURE( ; )
-	virtual int samples_avail() const                   BLARGG_PURE( ; )
+	virtual void clock_rate(int);
+	virtual void bass_freq(int);
+	virtual void clear();
+	virtual void end_frame(blip_time_t);
+	virtual int read_samples(blip_sample_t[], int);
+	virtual int samples_avail() const;
 
 private:
 	// noncopyable

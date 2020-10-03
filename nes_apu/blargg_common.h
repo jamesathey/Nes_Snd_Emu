@@ -20,12 +20,6 @@ I don't just use 'abcd' because that's implementation-dependent. */
 #define BLARGG_4CHAR( a, b, c, d ) \
 	((a&0xFF)*0x1000000 + (b&0xFF)*0x10000 + (c&0xFF)*0x100 + (d&0xFF))
 
-/* Pure virtual functions cause a vtable entry to a "called pure virtual"
-error handler, requiring linkage to the C++ runtime library. This macro is
-used in place of the "= 0", and simply expands to its argument. During
-development, it expands to "= 0", allowing detection of missing overrides. */
-#define BLARGG_PURE( def ) def
-
 // User configuration can override the above macros if necessary
 #include "blargg_config.h"
 
