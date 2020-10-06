@@ -1,7 +1,6 @@
-
 // NES 2A03 APU sound chip emulator with simpler interface
 
-// Nes_Snd_Emu 0.1.7. Copyright (C) 2003-2005 Shay Green. GNU LGPL license.
+// Nes_Snd_Emu Copyright (C) 2003-2005 Shay Green. GNU LGPL license.
 
 #ifndef SIMPLE_APU_H
 #define SIMPLE_APU_H

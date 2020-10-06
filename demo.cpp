@@ -1,4 +1,3 @@
-
 // Use Simple_Apu to play random tones. Write output to sound file "out.wav".
 
 #include "Simple_Apu.h"

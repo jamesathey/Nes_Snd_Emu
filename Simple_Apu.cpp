@@ -1,6 +1,3 @@
-
-// Nes_Snd_Emu 0.1.7. http://www.slack.net/~ant/libs/
-
 #include "Simple_Apu.h"
 
 #include <functional>

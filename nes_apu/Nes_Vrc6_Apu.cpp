@@ -1,5 +1,3 @@
-// Nes_Snd_Emu $vers. http://www.slack.net/~ant/
-
 #include "Nes_Vrc6_Apu.h"
 
 /* Copyright (C) 2003-2006 Shay Green. This module is free software; you

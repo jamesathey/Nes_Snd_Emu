@@ -1,5 +1,3 @@
-// Game_Music_Emu $vers. http://www.slack.net/~ant/
-
 #include "Nes_Fds_Apu.h"
 
 /* Copyright (C) 2006 Shay Green. This module is free software; you

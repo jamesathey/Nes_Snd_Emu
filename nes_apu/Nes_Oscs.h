@@ -1,6 +1,5 @@
 // Private oscillators used by Nes_Apu
 
-// Nes_Snd_Emu $vers
 #ifndef NES_OSCS_H
 #define NES_OSCS_H
 

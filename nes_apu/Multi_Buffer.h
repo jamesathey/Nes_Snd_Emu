@@ -1,6 +1,5 @@
 // Multi-channel sound buffer interface, and basic mono and stereo buffers
 
-// Blip_Buffer $vers
 #ifndef MULTI_BUFFER_H
 #define MULTI_BUFFER_H
 

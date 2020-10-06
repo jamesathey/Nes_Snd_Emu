@@ -1,6 +1,5 @@
 // Sunsoft FME-7 sound emulator
 
-// $package
 #ifndef NES_FME7_APU_H
 #define NES_FME7_APU_H
 

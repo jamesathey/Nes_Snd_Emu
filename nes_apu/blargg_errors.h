@@ -1,6 +1,5 @@
 // Error strings and conversion functions
 
-// $package
 #ifndef BLARGG_ERRORS_H
 #define BLARGG_ERRORS_H
 

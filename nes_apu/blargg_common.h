@@ -1,7 +1,6 @@
 // Sets up common environment for Shay Green's libraries.
 // To change configuration options, modify blargg_config.h, not this file.
 
-// $package
 #ifndef BLARGG_COMMON_H
 #define BLARGG_COMMON_H
 

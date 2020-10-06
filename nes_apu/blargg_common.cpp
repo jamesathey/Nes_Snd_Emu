@@ -1,5 +1,3 @@
-// $package. http://www.slack.net/~ant/
-
 #include "blargg_common.h"
 
 /* Copyright (C) 2008-2009 Shay Green. This module is free software; you

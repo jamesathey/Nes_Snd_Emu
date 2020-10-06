@@ -1,4 +1,3 @@
-
 // WAVE sound file writer for recording 16-bit output during program development
 
 // Copyright (C) 2003-2004 Shay Green. MIT license.

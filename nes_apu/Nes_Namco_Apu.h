@@ -1,6 +1,5 @@
 // Namco 106 sound chip emulator
 
-// Nes_Snd_Emu $vers
 #ifndef NES_NAMCO_APU_H
 #define NES_NAMCO_APU_H
 

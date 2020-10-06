@@ -1,5 +1,3 @@
-// Blip_Buffer $vers. http://www.slack.net/~ant/
-
 #include "Blip_Buffer.h"
 
 #include <math.h>

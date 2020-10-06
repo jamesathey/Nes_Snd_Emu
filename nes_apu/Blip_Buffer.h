@@ -1,6 +1,5 @@
 // Band-limited sound synthesis buffer
 
-// Blip_Buffer $vers
 #ifndef BLIP_BUFFER_H
 #define BLIP_BUFFER_H
 

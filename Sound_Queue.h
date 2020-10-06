@@ -1,4 +1,3 @@
-
 // Simple sound queue for synchronous sound handling in SDL
 
 // Copyright (C) 2005 Shay Green. MIT license.

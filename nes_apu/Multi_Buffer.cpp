@@ -1,5 +1,3 @@
-// Blip_Buffer $vers. http://www.slack.net/~ant/
-
 #include "Multi_Buffer.h"
 
 /* Copyright (C) 2003-2008 Shay Green. This module is free software; you

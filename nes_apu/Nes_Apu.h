@@ -1,6 +1,5 @@
 // NES 2A03 APU sound chip emulator
 
-// Nes_Snd_Emu $vers
 #ifndef NES_APU_H
 #define NES_APU_H
 
