@@ -118,52 +118,10 @@ otherwise continues normally. */
 			return blargg_err_memory;\
 	} while ( 0 )
 
-/* The usual min/max functions for built-in types.
-
-template<typename T> T min( T x, T y ) { return x < y ? x : y; }
-template<typename T> T max( T x, T y ) { return x > y ? x : y; } */
-#define BLARGG_DEF_MIN_MAX( type ) \
-	static inline type blargg_min( type x, type y ) { if ( y < x ) x = y; return x; }\
-	static inline type blargg_max( type x, type y ) { if ( x < y ) x = y; return x; }
-
-BLARGG_DEF_MIN_MAX( int32_t )
-BLARGG_DEF_MIN_MAX( int64_t )
-BLARGG_DEF_MIN_MAX( uint32_t )
-BLARGG_DEF_MIN_MAX( uint64_t )
-BLARGG_DEF_MIN_MAX( float )
-BLARGG_DEF_MIN_MAX( double )
-
-#undef  min
-#define min blargg_min
-
-#undef  max
-#define max blargg_max
-
-// typedef unsigned char byte;
-typedef unsigned char blargg_byte;
-#undef  byte
-#define byte blargg_byte
-
-#ifndef BLARGG_EXPORT
-	#if defined (_WIN32) && BLARGG_BUILD_DLL
-		#define BLARGG_EXPORT __declspec(dllexport)
-	#elif defined (__GNUC__)
-		// can always set visibility, even when not building DLL
-		#define BLARGG_EXPORT __attribute__ ((visibility ("default")))
-	#else
-		#define BLARGG_EXPORT
-	#endif
-#endif
-
 #if BLARGG_LEGACY
 	#define BLARGG_CHECK_ALLOC CHECK_ALLOC
 	#define BLARGG_RETURN_ERR  RETURN_ERR
 #endif
-
-// Called after failed operation when overall operation may still complete OK.
-// Only used by unit testing framework.
-#undef ACK_FAILURE
-#define ACK_FAILURE() ((void)0)
 
 /* BLARGG_SOURCE_BEGIN: If defined, #included, allowing redefition of dprintf etc.
 and check */

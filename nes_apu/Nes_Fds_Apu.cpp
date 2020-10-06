@@ -32,7 +32,7 @@ void Nes_Fds_Apu::reset()
 	mod_pos       = 0;
 	mod_write_pos = 0;
 	
-	static byte const initial_regs [0x0B] = {
+	static uint8_t const initial_regs [0x0B] = {
 		0x80,       // disable envelope
 		0, 0, 0xC0, // disable wave and lfo
 		0x80,       // disable sweep
