@@ -41,7 +41,6 @@ SET(NES_SND_EMU_HEADERS
 	nes_apu/emu2413.h
 	nes_apu/emutypes.h
 	nes_apu/gme_custom_dprintf.h
-	nes_apu/mamedef.h
 	nes_apu/Multi_Buffer.h
 	nes_apu/Nes_Apu.h
 	nes_apu/Nes_Fds_Apu.h
