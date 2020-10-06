@@ -49,3 +49,4 @@ ZERO_CHECK.vcxproj.filters
 .vs/
 *.filters
 SDL_Sound_Queue.vcxproj
+demo.vcxproj

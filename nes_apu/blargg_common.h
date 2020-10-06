@@ -63,19 +63,6 @@ interface, I override operator new to use malloc. */
 	#define BLARGG_NEW new (std::nothrow)
 #endif
 
-// Callback function with user data.
-// blargg_callback<T> set_callback; // for user, this acts like...
-// void set_callback( T func, void* user_data = NULL ); // ...this
-// To call function, do set_callback.f( .. set_callback.data ... );
-template<class T>
-struct DLLEXPORT blargg_callback
-{
-	T f;
-	void* data;
-	blargg_callback() { f = NULL; }
-	void operator () ( T callback, void* user_data = NULL ) { f = callback; data = user_data; }
-};
-
 BLARGG_NAMESPACE_END
 
 #endif

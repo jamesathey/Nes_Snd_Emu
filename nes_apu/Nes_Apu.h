@@ -6,6 +6,7 @@
 
 #include "blargg_common.h"
 #include "Nes_Oscs.h"
+#include <functional>
 
 struct apu_state_t;
 class Nes_Buffer;
@@ -15,11 +16,6 @@ public:
 // Basics
 
 	typedef int nes_time_t; // NES CPU clock cycle count
-	
-	// Sets memory reader callback used by DMC oscillator to fetch samples.
-	// When callback is invoked, 'user_data' is passed unchanged as the
-	// first parameter.
-	//void dmc_reader( int (*callback)( void* user_data, int addr ), void* user_data = NULL );
 	
 	// Sets buffer to generate sound into, or 0 to mute output (reduces
 	// emulation accuracy).
@@ -69,11 +65,6 @@ public:
 	// Sets treble equalization (see notes.txt)
 	void treble_eq( const blip_eq_t& );
 	
-	// Sets IRQ time callback that is invoked when the time of earliest IRQ
-	// may have changed, or NULL to disable. When callback is invoked,
-	// 'user_data' is passed unchanged as the first parameter.
-	//void irq_notifier( void (*callback)( void* user_data ), void* user_data = NULL );
-	
 	// Gets time that APU-generated IRQ will occur if no further register reads
 	// or writes occur. If IRQ is already pending, returns irq_waiting. If no
 	// IRQ will occur, returns no_irq.
@@ -98,9 +89,25 @@ public:
 public:
 	Nes_Apu();
 	BLARGG_DISABLE_NOTHROW
-	
-	blargg_callback<int (*)( void* user_data, int addr )> dmc_reader;
-	blargg_callback<void (*)( void* user_data )> irq_notifier;
+
+#ifdef _MSC_VER
+#pragma warning(push)
+	// prevents "warning C4251: 'Nes_Apu::dmc_reader': class 'std::function<int (int)>' needs to have dll-interface to be used by clients of class 'Nes_Apu'"
+	// std::function<>, being a templated class inside of the STL, is guaranteed to generate code where needed for clients, because it's all in the header
+#pragma warning(disable : 4251)
+#endif
+
+	// Memory reader callback used by DMC oscillator to fetch samples.
+	// Use std::bind to add custom parameters.
+	std::function<int(int)> dmc_reader;
+
+	// IRQ time callback that is invoked when the time of earliest IRQ may have changed.
+	// Use std::bind to add custom parameters.
+	std::function<void()> irq_notifier;
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 	void enable_nonlinear_( double sq, double tnd );
 	static float tnd_total_() { return 196.015f; }

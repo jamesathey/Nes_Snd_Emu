@@ -5,8 +5,9 @@
 
 #include <stdlib.h>
 
-// Uncomment to use SDL sound
-//#include "SDL.h"
+#ifdef SDL_INIT_AUDIO
+#include "SDL.h"
+#endif
 
 const long sample_rate = 44100;
 static Simple_Apu apu;
@@ -32,7 +33,7 @@ static void emulate_frame()
 	apu.end_frame();
 }
 
-static int read_dmc( void*, cpu_addr_t addr )
+static int read_dmc( void*, int addr )
 {
 	// call your memory read function here
 	//return read_memory( addr );

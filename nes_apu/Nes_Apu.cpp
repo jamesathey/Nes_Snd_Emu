@@ -129,8 +129,8 @@ void Nes_Apu::irq_changed()
 	
 	if ( new_irq != earliest_irq_ ) {
 		earliest_irq_ = new_irq;
-		if ( irq_notifier.f )
-			irq_notifier.f( irq_notifier.data );
+		if ( irq_notifier )
+			irq_notifier();
 	}
 }
 
