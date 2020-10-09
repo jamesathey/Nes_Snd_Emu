@@ -18,23 +18,19 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
 
-const int header_size = 0x2C;
+const unsigned header_size = 0x2C;
 
 static void exit_with_error( const char* str ) {
 	fprintf( stderr, "Error: %s\n", str );
 	exit( EXIT_FAILURE );
 }
 
-Wave_Writer::Wave_Writer( long sample_rate, const char* filename )
+Wave_Writer::Wave_Writer(uint32_t sample_rate, const char* filename):
+	sample_count_(0),
+	rate(sample_rate),
+	buf_pos(header_size)
 {
-	sample_count_ = 0;
-	rate = sample_rate;
-	buf_pos = header_size;
-	stereo( 0 );
-	
-	buf = new unsigned char [buf_size];
-	if ( !buf )
-		exit_with_error( "Out of memory" );
+	stereo(false);
 	
 	file = fopen( filename, "wb" );
 	if ( !file )
@@ -80,27 +76,41 @@ Wave_Writer::~Wave_Writer()
 	flush();
 	
 	// generate header
-	long ds = sample_count_ * sizeof (sample_t);
-	long rs = header_size - 8 + ds;
-	int frame_size = chan_count * sizeof (sample_t);
-	long bps = rate * frame_size;
-	unsigned char header [header_size] = {
+	uint32_t ds = sample_count_ * sizeof (sample_t);
+	uint32_t rs = header_size - 8 + ds;
+	uint16_t frame_size = chan_count * sizeof (sample_t);
+	uint32_t bps = rate * frame_size;
+	uint8_t header [header_size] = {
 		'R','I','F','F',
-		rs,rs>>8,           // length of rest of file
-		rs>>16,rs>>24,
+		// length of rest of file, unsigned little endian 32 bits
+		(uint8_t)(rs & 0xFF),
+		(uint8_t)((rs>>8) & 0xFF), 
+		(uint8_t)((rs>>16) & 0xFF),
+		(uint8_t)((rs>>24) & 0xFF),
 		'W','A','V','E',
 		'f','m','t',' ',
 		0x10,0,0,0,         // size of fmt chunk
 		1,0,                // uncompressed format
 		chan_count,0,       // channel count
-		rate,rate >> 8,     // sample rate
-		rate>>16,rate>>24,
-		bps,bps>>8,         // bytes per second
-		bps>>16,bps>>24,
-		frame_size,0,       // bytes per sample frame
+		// sample rate, unsigned little endian 32 bits
+		(uint8_t)(rate & 0xFF),
+		(uint8_t)((rate>>8) & 0xFF),
+		(uint8_t)((rate>>16) & 0xFF),
+		(uint8_t)((rate>>24) & 0xFF),
+		// bytes per second, unsigned little endian 32 bits
+		(uint8_t)(bps & 0xFF),
+		(uint8_t)((bps>>8) & 0xFF),
+		(uint8_t)((bps>>16) & 0xFF),
+		(uint8_t)((bps>>24) & 0xFF),
+		// bytes per sample frame, unsigned little endian 16 bits
+		(uint8_t)(frame_size & 0xFF),(uint8_t)((frame_size>>8) & 0xFF),
 		16,0,               // bits per sample
 		'd','a','t','a',
-		ds,ds>>8,ds>>16,ds>>24// size of sample data
+		// size of sample data, unsigned little endian 32 bits
+		(uint8_t)(ds & 0xFF),
+		(uint8_t)((ds>>8) & 0xFF),
+		(uint8_t)((ds>>16) & 0xFF),
+		(uint8_t)((ds>>24) & 0xFF),
 		// ...              // sample data
 	};
 	
@@ -109,6 +119,4 @@ Wave_Writer::~Wave_Writer()
 	fwrite( header, sizeof header, 1, file );
 	
 	fclose( file );
-	delete [] buf;
 }
-

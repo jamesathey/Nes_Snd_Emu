@@ -5,8 +5,8 @@
 #ifndef WAVE_WRITER_HPP
 #define WAVE_WRITER_HPP
 
-#include <stddef.h>
 #include <stdio.h>
+#include <cstdint>
 
 class Wave_Writer {
 public:
@@ -14,17 +14,17 @@ public:
 	
 	// Create sound file with given sample rate (in Hz) and filename.
 	// Exit program if there's an error.
-	Wave_Writer( long sample_rate, char const* filename = "out.wav" );
+	Wave_Writer(uint32_t sample_rate, char const* filename = "out.wav" );
 	
 	// Enable stereo output
-	void stereo( int );
+	void stereo(bool);
 	
 	// Append 'count' samples to file. Use every 'skip'th source sample; allows
 	// one channel of stereo sample pairs to be written by specifying a skip of 2.
 	void write( const sample_t*, long count, int skip = 1 );
 	
 	// Number of samples written so far
-	long sample_count() const;
+	uint32_t sample_count() const;
 	
 	// Write sound file header and close file. If no samples were written,
 	// delete file.
@@ -34,21 +34,21 @@ public:
 // End of public interface
 private:
 	enum { buf_size = 32768 * 2 };
-	unsigned char* buf;
+	unsigned char buf[buf_size];
 	FILE*   file;
-	long    sample_count_;
-	long    rate;
-	long    buf_pos;
-	int     chan_count;
+	uint32_t    sample_count_;
+	uint32_t    rate;
+	uint32_t    buf_pos;
+	uint8_t     chan_count;
 	
 	void flush();
 };
 
-inline void Wave_Writer::stereo( int s ) {
+inline void Wave_Writer::stereo(bool s) {
 	chan_count = s ? 2 : 1;
 }
 
-inline long Wave_Writer::sample_count() const {
+inline uint32_t Wave_Writer::sample_count() const {
 	return sample_count_;
 }
 
