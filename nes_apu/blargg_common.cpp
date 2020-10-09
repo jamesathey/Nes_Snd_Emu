@@ -13,9 +13,6 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA */
 
 #include "blargg_source.h"
 
-BLARGG_NAMESPACE_BEGIN
-
 // defined here to avoid need for blargg_errors.cpp in simple programs
 blargg_err_def_t blargg_err_memory = BLARGG_ERR_MEMORY;
 
-BLARGG_NAMESPACE_END

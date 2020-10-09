@@ -101,7 +101,6 @@ private:
 
 // Implementation
 public:
-	BLARGG_DISABLE_NOTHROW
 	Blip_Buffer();
 	~Blip_Buffer();
 	void remove_silence( int n );
@@ -152,9 +151,6 @@ public:
 	void offset_resampled( blip_resampled_time_t, int delta, Blip_Buffer* ) const;
 	
 // Implementation
-public:
-	BLARGG_DISABLE_NOTHROW
-
 private:
 #if BLIP_BUFFER_FAST
 	Blip_Synth_Fast_ impl;

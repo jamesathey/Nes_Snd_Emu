@@ -13,8 +13,6 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA */
 
 #include "blargg_source.h"
 
-BLARGG_NAMESPACE_BEGIN
-
 blargg_err_def_t blargg_err_generic      = BLARGG_ERR_GENERIC;
 // blargg_err_memory is defined in blargg_common.cpp
 blargg_err_def_t blargg_err_caller       = BLARGG_ERR_CALLER;
@@ -111,5 +109,3 @@ blargg_err_t blargg_code_to_err( int code, blargg_err_to_code_t const codes [] )
 	
 	return codes->str;
 }
-
-BLARGG_NAMESPACE_END

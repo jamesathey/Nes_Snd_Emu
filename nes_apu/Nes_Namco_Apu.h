@@ -34,7 +34,6 @@ public:
 	
 public:
 	Nes_Namco_Apu();
-	BLARGG_DISABLE_NOTHROW
 private:
 	// noncopyable
 	Nes_Namco_Apu( const Nes_Namco_Apu& );

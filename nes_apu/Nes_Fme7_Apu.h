@@ -41,7 +41,6 @@ public:
 	
 public:
 	Nes_Fme7_Apu();
-	BLARGG_DISABLE_NOTHROW
 private:
 	// noncopyable
 	Nes_Fme7_Apu( const Nes_Fme7_Apu& );

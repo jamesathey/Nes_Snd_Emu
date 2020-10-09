@@ -55,7 +55,6 @@ private:
 
 // Implementation
 public:
-	BLARGG_DISABLE_NOTHROW
 	void disable_immediate_removal()                    { immediate_removal_ = false; }
 
 protected:
@@ -109,7 +108,6 @@ private:
 		
 	// Implementation
 	public:
-		BLARGG_DISABLE_NOTHROW
 		int read_samples( blip_sample_t [], int );
 		void remove_silence( int );
 		void remove_samples( int );

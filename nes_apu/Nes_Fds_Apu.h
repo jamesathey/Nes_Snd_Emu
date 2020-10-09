@@ -26,7 +26,6 @@ public:
 public:
 	Nes_Fds_Apu();
 	void write_( unsigned addr, int data );
-	BLARGG_DISABLE_NOTHROW
 	
 	void set_output( int index, Blip_Buffer* center,
 			Blip_Buffer* left_ignored = NULL, Blip_Buffer* right_ignored = NULL );

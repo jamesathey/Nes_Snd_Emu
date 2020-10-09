@@ -7,8 +7,6 @@
 	#include "blargg_common.h"
 #endif
 
-BLARGG_NAMESPACE_BEGIN
-
 typedef const char blargg_err_def_t [];
 
 // Basic errors
@@ -77,7 +75,5 @@ blargg_err_t blargg_code_to_err( int code, blargg_err_to_code_t const [] );
 #define BLARGG_ERR_FILE_TYPE    BLARGG_ERR_TYPE( "wrong file type" )
 #define BLARGG_ERR_FILE_FEATURE BLARGG_ERR_TYPE( "unsupported file feature" )
 #define BLARGG_ERR_FILE_CORRUPT BLARGG_ERR_TYPE( "corrupt file" )
-
-BLARGG_NAMESPACE_END
 
 #endif

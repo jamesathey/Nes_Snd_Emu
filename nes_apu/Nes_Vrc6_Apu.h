@@ -31,7 +31,6 @@ public:
 	
 public:
 	Nes_Vrc6_Apu();
-	BLARGG_DISABLE_NOTHROW
 private:
 	// noncopyable
 	Nes_Vrc6_Apu( const Nes_Vrc6_Apu& );

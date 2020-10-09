@@ -29,7 +29,6 @@ public:
 public:
 	Nes_Vrc7_Apu();
 	~Nes_Vrc7_Apu();
-	BLARGG_DISABLE_NOTHROW
 private:
 	// noncopyable
 	Nes_Vrc7_Apu( const Nes_Vrc7_Apu& );

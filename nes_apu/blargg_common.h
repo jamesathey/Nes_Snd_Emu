@@ -22,46 +22,4 @@ I don't just use 'abcd' because that's implementation-dependent. */
 // User configuration can override the above macros if necessary
 #include "blargg_config.h"
 
-#ifdef BLARGG_NAMESPACE
-	#define BLARGG_NAMESPACE_BEGIN namespace BLARGG_NAMESPACE {
-	#define BLARGG_NAMESPACE_END }
-
-	BLARGG_NAMESPACE_BEGIN
-	BLARGG_NAMESPACE_END
-	using namespace BLARGG_NAMESPACE;
-#else
-	#define BLARGG_NAMESPACE_BEGIN
-	#define BLARGG_NAMESPACE_END
-#endif
-
-BLARGG_NAMESPACE_BEGIN
-
-/* My code is not written with exceptions in mind, so either uses new (nothrow)
-OR overrides operator new in my classes. The former is best since clients
-creating objects will get standard exceptions on failure, but that causes it
-to require the standard C++ library. So, when the client is using the C
-interface, I override operator new to use malloc. */
-
-// BLARGG_DISABLE_NOTHROW is put inside classes
-#ifndef BLARGG_DISABLE_NOTHROW
-	// throw spec mandatory in ISO C++ if NULL can be returned
-	#if __cplusplus >= 199711 || __GNUC__ >= 3 || _MSC_VER >= 1300
-		#define BLARGG_THROWS_NOTHING throw ()
-	#else
-		#define BLARGG_THROWS_NOTHING
-	#endif
-
-	#define BLARGG_DISABLE_NOTHROW \
-		void* operator new ( size_t s ) BLARGG_THROWS_NOTHING { return malloc( s ); }\
-		void operator delete( void* p ) BLARGG_THROWS_NOTHING { free( p ); }
-
-	#define BLARGG_NEW new
-#else
-	// BLARGG_NEW is used in place of new in library code
-	#include <new>
-	#define BLARGG_NEW new (std::nothrow)
-#endif
-
-BLARGG_NAMESPACE_END
-
 #endif

@@ -87,7 +87,6 @@ public:
 // Implementation
 public:
 	Nes_Apu();
-	BLARGG_DISABLE_NOTHROW
 
 #ifdef _MSC_VER
 #pragma warning(push)
