@@ -11,25 +11,101 @@
 const long sample_rate = 44100;
 static Simple_Apu apu;
 
+enum {
+	A, As, B, C, Cs, D, Ds, E, F, Fs, G, Gs
+};
+
+#define P(pitch, octave) (octave * 12) + pitch
+
+uint8_t periodTableLo[] = {
+	0xf1, 0x7f, 0x13, 0xad, 0x4d, 0xf3, 0x9d, 0x4c, 0x00, 0xb8, 0x74, 0x34,
+	0xf8, 0xbf, 0x89, 0x56, 0x26, 0xf9, 0xce, 0xa6, 0x80, 0x5c, 0x3a, 0x1a,
+	0xfb, 0xdf, 0xc4, 0xab, 0x93, 0x7c, 0x67, 0x52, 0x3f, 0x2d, 0x1c, 0x0c,
+	0xfd, 0xef, 0xe1, 0xd5, 0xc9, 0xbd, 0xb3, 0xa9, 0x9f, 0x96, 0x8e, 0x86,
+	0x7e, 0x77, 0x70, 0x6a, 0x64, 0x5e, 0x59, 0x54, 0x4f, 0x4b, 0x46, 0x42,
+	0x3f, 0x3b, 0x38, 0x34, 0x31, 0x2f, 0x2c, 0x29, 0x27, 0x25, 0x23, 0x21,
+	0x1f, 0x1d, 0x1b, 0x1a, 0x18, 0x17, 0x15, 0x14
+};
+
+uint8_t periodTableHi[] = {
+	0x07, 0x07, 0x07, 0x06, 0x06, 0x05, 0x05, 0x05, 0x05, 0x04, 0x04, 0x04,
+	0x03, 0x03, 0x03, 0x03, 0x03, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02,
+	0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+};
+
+int pitches[] = {
+	P(C,2), P(E,2), P(G,2), P(C,3), P(E,3), P(G,2), P(C,3), P(E,3),
+	P(C,2), P(E,2), P(G,2), P(C,3), P(E,3), P(G,2), P(C,3), P(E,3),
+
+	P(C,2), P(D,2), P(A,3), P(D,3), P(F,3), P(A,3), P(D,3), P(F,3),
+	P(C,2), P(D,2), P(A,3), P(D,3), P(F,3), P(A,3), P(D,3), P(F,3),
+
+	P(B,2), P(D,2), P(G,2), P(D,3), P(F,3), P(G,2), P(D,3), P(F,3),
+	P(B,2), P(D,2), P(G,2), P(D,3), P(F,3), P(G,2), P(D,3), P(F,3),
+
+	P(C,2), P(E,2), P(G,2), P(C,3), P(E,3), P(G,2), P(C,3), P(E,3),
+	P(C,2), P(E,2), P(G,2), P(C,3), P(E,3), P(G,2), P(C,3), P(E,3),
+};
+
+int triPitches[] = {
+	P(C,3),
+	P(C,3),
+
+	P(C,3),
+	P(C,3),
+
+	P(B,3),
+	P(B,3),
+
+	P(C,3),
+	P(C,3),
+};
+
 // "emulate" 1/60 second of sound
-static void emulate_frame()
+static bool emulate_frame()
 {
 	// Decay current tone
-	static int volume;
-	apu.write_register( 0x4000, 0xb0 | volume );
-	volume--;
-	if ( volume < 0 )
+	static int volume = 0;
+	static int pitchIdx = -1;
+	static int triPitchIdx = 0;
+	apu.write_register(0x4000, 0xb0 | volume);
+	// The rate of decay sets the tempo
+	// Decay twice as much every 3rd frame
+	if (volume % 3 == 0)
+		volume -= 2;
+	else
+		volume--;
+	if (volume < 0)
 	{
 		volume = 15;
-		
-		// Start a new random tone
-		apu.write_register( 0x4015, 0x01 );
-		apu.write_register( 0x4002, rand() & 0xff );
-		apu.write_register( 0x4003, (rand() & 3) | 0x11 );
+		pitchIdx++;
+
+		if (pitchIdx >= (sizeof(pitches) / sizeof(int)))
+			return false;
+
+		// Start the next note
+		apu.write_register(Nes_Apu::status_addr, 0x05);
+		apu.write_register(0x4002, periodTableLo[pitches[pitchIdx]]);
+		apu.write_register(0x4003, periodTableHi[pitches[pitchIdx]]);
+
+		if (pitchIdx % 8 == 0) {
+			apu.write_register(0x4008, 0xFF);
+			apu.write_register(0x400A, periodTableLo[triPitches[triPitchIdx]]);
+			apu.write_register(0x400B, periodTableHi[triPitches[triPitchIdx]]);
+			triPitchIdx++;
+		}
+		else if (pitchIdx % 8 == 7) {
+			apu.write_register(0x4008, 0x80);
+		}
 	}
-	
+
 	// Generate 1/60 second of sound into APU's sample buffer
 	apu.end_frame();
+	return true;
 }
 
 static int read_dmc( void*, int addr )
@@ -55,11 +131,8 @@ int main( int argc, char** argv )
 	apu.dmc_reader( read_dmc, NULL );
 	
 	// Generate a few seconds of sound
-	for ( int n = 60 * 4; n--; )
+	while(emulate_frame()) // Simulate emulation of 1/60 second frame
 	{
-		// Simulate emulation of 1/60 second frame
-		emulate_frame();
-		
 		// Samples from the frame can now be read out of the apu, or
 		// allowed to accumulate and read out later. Use samples_avail()
 		// to find out how many samples are currently in the buffer.
