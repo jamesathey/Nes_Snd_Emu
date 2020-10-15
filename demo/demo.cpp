@@ -1,17 +1,36 @@
-// Use Simple_Apu to play random tones. Write output to sound file "out.wav".
+/*
+	Copyright (c) 2003-2005 Shay Green
+	Copyright (c) 2020 James Athey
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in
+	all copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+	FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+	DEALINGS IN THE SOFTWARE.
+*/
+
+#define SDL_MAIN_HANDLED
+#include "SDL.h"
 
 #include "Simple_Apu.h"
+#include "Wave_Writer.hpp"
+#include "Sound_Queue.h"
 
 #include <stdlib.h>
 
-#ifdef SDL_INIT_AUDIO
-#include "SDL.h"
-#endif
-
-const long sample_rate = 44100;
-static Simple_Apu apu;
-
-enum {
+enum Scale {
 	A, As, B, C, Cs, D, Ds, E, F, Fs, G, Gs
 };
 
@@ -37,6 +56,7 @@ uint8_t periodTableHi[] = {
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 
+// pitches for the first square wave channel to play, 16 per measure
 int pitches[] = {
 	P(C,2), P(E,2), P(G,2), P(C,3), P(E,3), P(G,2), P(C,3), P(E,3),
 	P(C,2), P(E,2), P(G,2), P(C,3), P(E,3), P(G,2), P(C,3), P(E,3),
@@ -51,6 +71,7 @@ int pitches[] = {
 	P(C,2), P(E,2), P(G,2), P(C,3), P(E,3), P(G,2), P(C,3), P(E,3),
 };
 
+// pitches for the triangle channel to play, 2 per measure
 int triPitches[] = {
 	P(C,3),
 	P(C,3),
@@ -65,8 +86,8 @@ int triPitches[] = {
 	P(C,3),
 };
 
-// "emulate" 1/60 second of sound
-static bool emulate_frame()
+// "emulate" 1/60 second of sound. Returns false when there are no more notes to play.
+bool emulate_frame(Simple_Apu& apu)
 {
 	// Decay current tone
 	static int volume = 0;
@@ -93,12 +114,14 @@ static bool emulate_frame()
 		apu.write_register(0x4003, periodTableHi[pitches[pitchIdx]]);
 
 		if (pitchIdx % 8 == 0) {
+			// play 1 triangle note for every 8 square note, aka, once every two beats
 			apu.write_register(0x4008, 0xFF);
 			apu.write_register(0x400A, periodTableLo[triPitches[triPitchIdx]]);
 			apu.write_register(0x400B, periodTableHi[triPitches[triPitchIdx]]);
 			triPitchIdx++;
 		}
 		else if (pitchIdx % 8 == 7) {
+			// silence the triangle channel before the last 16th note
 			apu.write_register(0x4008, 0x80);
 		}
 	}
@@ -108,95 +131,42 @@ static bool emulate_frame()
 	return true;
 }
 
-static int read_dmc( void*, int addr )
-{
-	// call your memory read function here
-	//return read_memory( addr );
-	return 0;
-}
 
-static void init_sound();
-static void play_samples( const blip_sample_t*, long count );
-static void cleanup_sound();
-
-int main( int argc, char** argv )
+int main(int argc, char** argv)
 {
-	init_sound();
+	SDL_SetMainReady();
+	if (SDL_Init(SDL_INIT_AUDIO) < 0)
+		exit(EXIT_FAILURE);
+	atexit(SDL_Quit);
+
+	const long sample_rate = 44100;
+
+	Sound_Queue sound_queue;
+	if (sound_queue.init(sample_rate))
+		exit(EXIT_FAILURE);
 	
+	Simple_Apu apu;
 	// Set sample rate and check for out of memory error
-	if ( apu.sample_rate( sample_rate ) )
+	if (apu.sample_rate(sample_rate))
 		return EXIT_FAILURE;
 	
-	// Set function for APU to read memory with (required for DMC samples to play properly)
-	apu.dmc_reader( read_dmc, NULL );
-	
-	// Generate a few seconds of sound
-	while(emulate_frame()) // Simulate emulation of 1/60 second frame
+	blip_sample_t buf[2048];
+
+	// Generate sound until we run out of notes
+	while(emulate_frame(apu)) // Simulate emulation of 1/60 second frame
 	{
 		// Samples from the frame can now be read out of the apu, or
 		// allowed to accumulate and read out later. Use samples_avail()
 		// to find out how many samples are currently in the buffer.
 		
-		int const buf_size = 2048;
-		static blip_sample_t buf [buf_size];
-		
 		// Play whatever samples are available
-		long count = apu.read_samples( buf, buf_size );
-		play_samples( buf, count );
+		long count = apu.read_samples(buf, sizeof(buf) / sizeof(blip_sample_t));
+		sound_queue.write(buf, count);
+
+		// write samples to sound file
+		//static Wave_Writer wave(sample_rate);
+		//wave.write(samples, count);
 	}
-	
-	cleanup_sound();
 	
 	return 0;
 }
-
-
-// Sound output handling (either to SDL or wave file)
-
-#ifdef SDL_INIT_AUDIO
-
-	#include "Sound_Queue.h"
-
-	static Sound_Queue* sound_queue;
-	
-	static void init_sound()
-	{
-		if ( SDL_Init( SDL_INIT_AUDIO ) < 0 )
-			exit( EXIT_FAILURE );
-		
-		atexit( SDL_Quit );
-		
-		sound_queue = new Sound_Queue;
-		if ( !sound_queue )
-			exit( EXIT_FAILURE );
-		
-		if ( sound_queue->init( sample_rate ) )
-			exit( EXIT_FAILURE );
-	}
-
-	static void cleanup_sound()
-	{
-		delete sound_queue;
-	}
-	
-	static void play_samples( const blip_sample_t* samples, long count )
-	{
-		sound_queue->write( samples, count );
-	}
-	
-#else
-
-	#include "Wave_Writer.hpp"
-	
-	static void init_sound()    { }
-	static void cleanup_sound() { }
-
-	static void play_samples( const blip_sample_t* samples, long count )
-	{
-		// write samples to sound file
-		static Wave_Writer wave( sample_rate );
-		wave.write( samples, count );
-	}
-	
-#endif
-
