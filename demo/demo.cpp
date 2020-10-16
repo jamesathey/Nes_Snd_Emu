@@ -28,7 +28,8 @@
 #include "Wave_Writer.hpp"
 #include "Sound_Queue.h"
 
-#include <stdlib.h>
+#include <cstdio>
+#include <memory>
 
 enum Scale {
 	A, As, B, C, Cs, D, Ds, E, F, Fs, G, Gs
@@ -134,6 +135,13 @@ bool emulate_frame(Simple_Apu& apu)
 
 int main(int argc, char** argv)
 {
+	bool liveMode = argc == 1;
+	if (argc > 2 || (argc == 2 && strcmp(argv[1], "-w") != 0)) {
+		fprintf(stderr, "Usage: %s    (plays live audio)\n", argv[0]);
+		fprintf(stderr, "       %s -w (writes to out.wav in the current working directory)\n", argv[0]);
+		exit(EXIT_FAILURE);
+	}
+
 	SDL_SetMainReady();
 	if (SDL_Init(SDL_INIT_AUDIO) < 0)
 		exit(EXIT_FAILURE);
@@ -141,10 +149,17 @@ int main(int argc, char** argv)
 
 	const long sample_rate = 44100;
 
-	Sound_Queue sound_queue;
-	if (sound_queue.init(sample_rate))
-		exit(EXIT_FAILURE);
-	
+	std::unique_ptr<Sound_Queue> sound_queue;
+	std::unique_ptr<Wave_Writer> wave_writer;
+	if (liveMode) {
+		sound_queue = std::make_unique<Sound_Queue>();
+		if (sound_queue->init(sample_rate))
+			exit(EXIT_FAILURE);
+	}
+	else {
+		wave_writer = std::make_unique<Wave_Writer>(sample_rate);
+	}
+
 	Simple_Apu apu;
 	// Set sample rate and check for out of memory error
 	if (apu.sample_rate(sample_rate))
@@ -159,13 +174,13 @@ int main(int argc, char** argv)
 		// allowed to accumulate and read out later. Use samples_avail()
 		// to find out how many samples are currently in the buffer.
 		
-		// Play whatever samples are available
+		// Fetch whatever samples are available
 		long count = apu.read_samples(buf, sizeof(buf) / sizeof(blip_sample_t));
-		sound_queue.write(buf, count);
 
-		// write samples to sound file
-		//static Wave_Writer wave(sample_rate);
-		//wave.write(samples, count);
+		if (liveMode)
+			sound_queue->write(buf, count);
+		else
+			wave_writer->write(buf, count);
 	}
 	
 	return 0;
