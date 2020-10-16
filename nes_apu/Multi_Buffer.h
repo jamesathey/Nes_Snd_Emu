@@ -19,7 +19,7 @@ public:
 	// (type information used by Effects_Buffer)
 	enum { type_index_mask = 0xFF };
 	enum { wave_type = 0x100, noise_type = 0x200, mixed_type = wave_type | noise_type };
-	virtual blargg_err_t set_channel_count( int, int const types [] = NULL );
+	virtual blargg_err_t set_channel_count( int, int const types [] = nullptr );
 	int channel_count() const                           { return channel_count_; }
 	
 	// Gets indexed channel, from 0 to channel_count()-1

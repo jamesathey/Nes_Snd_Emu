@@ -28,7 +28,7 @@ Nes_Apu::Nes_Apu() :
 	oscs [3] = &noise;
 	oscs [4] = &dmc;
 	
-	set_output( NULL );
+	set_output( nullptr );
 	dmc.nonlinear = false;
 	volume( 1.0 );
 	reset( false );

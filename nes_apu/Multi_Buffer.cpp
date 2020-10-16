@@ -19,7 +19,7 @@ Multi_Buffer::Multi_Buffer( int spf ) : samples_per_frame_( spf )
 	length_                 = 0;
 	sample_rate_            = 0;
 	channels_changed_count_ = 1;
-	channel_types_          = NULL;
+	channel_types_          = nullptr;
 	channel_count_          = 0;
 	immediate_removal_      = true;
 }
@@ -27,7 +27,7 @@ Multi_Buffer::Multi_Buffer( int spf ) : samples_per_frame_( spf )
 Multi_Buffer::channel_t Multi_Buffer::channel( int /*index*/ )
 {
 	channel_t ch;
-	ch.center = ch.left = ch.right = NULL;
+	ch.center = ch.left = ch.right = nullptr;
 	return ch;
 }
 
@@ -36,9 +36,9 @@ Multi_Buffer::channel_t Multi_Buffer::channel( int /*index*/ )
 Silent_Buffer::Silent_Buffer() : Multi_Buffer( 1 ) // 0 channels would probably confuse
 {
 	// TODO: better to use empty Blip_Buffer so caller never has to check for NULL?
-	chan.left   = NULL;
-	chan.center = NULL;
-	chan.right  = NULL;
+	chan.left   = nullptr;
+	chan.center = nullptr;
+	chan.right  = nullptr;
 }
 
 // Mono_Buffer

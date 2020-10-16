@@ -6,6 +6,7 @@
 #include "blargg_common.h"
 #include "Nes_Oscs.h"
 #include <functional>
+#include <climits>
 
 struct apu_state_t;
 class Nes_Buffer;
@@ -74,7 +75,7 @@ public:
 	// Counts number of DMC reads that would occur if 'run_until( t )' were executed.
 	// If last_read is not NULL, set *last_read to the earliest time that
 	// 'count_dmc_reads( time )' would result in the same result.
-	int count_dmc_reads( nes_time_t t, nes_time_t* last_read = NULL ) const;
+	int count_dmc_reads( nes_time_t t, nes_time_t* last_read = nullptr ) const;
 	
 	// Time when next DMC memory read will occur
 	nes_time_t next_dmc_read_time() const;

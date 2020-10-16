@@ -28,7 +28,7 @@ public:
 	void write_( unsigned addr, int data );
 	
 	void set_output( int index, Blip_Buffer* center,
-			Blip_Buffer* left_ignored = NULL, Blip_Buffer* right_ignored = NULL );
+			Blip_Buffer* left_ignored = nullptr, Blip_Buffer* right_ignored = nullptr );
 	void osc_output( int, Blip_Buffer* );
 private:
 	enum { wave_size       = 0x40 };
@@ -133,7 +133,7 @@ inline int Nes_Fds_Apu::read( blip_time_t time, unsigned addr )
 inline Nes_Fds_Apu::Nes_Fds_Apu()
 {
 	lfo_tempo = lfo_base_tempo;
-	set_output( NULL );
+	set_output( nullptr );
 	volume( 1.0 );
 	reset();
 }

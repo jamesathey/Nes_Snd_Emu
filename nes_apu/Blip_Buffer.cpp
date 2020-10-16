@@ -21,8 +21,8 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA */
 Blip_Buffer::Blip_Buffer()
 {
 	factor_      = UINT_MAX/2 + 1;
-	buffer_      = NULL;
-	buffer_center_ = NULL;
+	buffer_      = nullptr;
+	buffer_center_ = nullptr;
 	buffer_size_ = 0;
 	sample_rate_ = 0;
 	bass_shift_  = 0;
@@ -242,7 +242,7 @@ void Blip_Buffer::load_state( blip_buffer_state_t const& in )
 
 Blip_Synth_Fast_::Blip_Synth_Fast_()
 {
-	buf          = NULL;
+	buf          = nullptr;
 	last_amp     = 0;
 	delta_factor = 0;
 }
@@ -264,7 +264,7 @@ Blip_Synth_::Blip_Synth_( short p [], int w ) :
 {
 	volume_unit_ = 0.0;
 	kernel_unit  = 0;
-	buf          = NULL;
+	buf          = nullptr;
 	last_amp     = 0;
 	delta_factor = 0;
 }

@@ -15,7 +15,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA */
 
 Nes_Namco_Apu::Nes_Namco_Apu()
 {
-	set_output( NULL );
+	set_output( nullptr );
 	volume( 1.0 );
 	reset();
 }

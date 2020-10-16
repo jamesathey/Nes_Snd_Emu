@@ -91,7 +91,7 @@ inline void Nes_Fme7_Apu::set_output( Blip_Buffer* buf )
 
 inline Nes_Fme7_Apu::Nes_Fme7_Apu()
 {
-	set_output( NULL );
+	set_output( nullptr );
 	volume( 1.0 );
 	reset();
 }

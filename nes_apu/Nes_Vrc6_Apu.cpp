@@ -36,7 +36,7 @@ void Nes_Vrc6_Apu::reset()
 
 Nes_Vrc6_Apu::Nes_Vrc6_Apu()
 {
-	set_output( NULL );
+	set_output( nullptr );
 	volume( 1.0 );
 	reset();
 }
