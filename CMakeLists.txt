@@ -52,7 +52,6 @@ SET(NES_SND_EMU_HEADERS
 	nes_apu/Nes_Vrc7_Apu.h
 	nes_apu/panning.h
 	nes_apu/vrc7tone.h
-	blargg_config.h
 )
 
 SET(NES_SND_EMU_DOCS

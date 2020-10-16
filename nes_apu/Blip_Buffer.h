@@ -5,6 +5,7 @@
 
 #include "blargg_common.h"
 #include "Blip_Buffer_impl.h"
+#include <stdint.h>
 
 typedef int blip_time_t;                    // Source clocks in current time frame
 typedef int16_t blip_sample_t;       // 16-bit signed output sample

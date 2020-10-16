@@ -264,20 +264,10 @@ Much of the expansion audio emulation code is based on potentially outdated docu
 If you're having problems, check the following:
 
 * If multiple threads are being used, ensure that only one at a time is accessing objects from the library. This library is not thread-safe.
-* Try turning the compiler's optimizer off. Sometimes an optimizer generates bad code.
 * Enable debugging support. This enables assertions and other run-time checks.
 * See if the demo works.
 
 ## Error handling
 Functions which can fail have a return type of blargg_err_t, which is a pointer to an error string (`const char*`). If the function is successful it returns blargg_success (NULL), otherwise it returns a pointer to an error string.
 
-To allow compatibility with older C++ compilers, no exceptions are thrown by any of the modules. The library is exception-safe, and any exceptions which occur are not intercepted. Any exceptions thrown by the standard library or caller-supplied functions are not caught.
-
-The library uses `BLARGG_NEW` instead of new for allocations. By default, `BLARGG_NEW` is defined to `new (nothrow)` so that a failed allocation won't cause an exception. This can be overriden in your `blargg_config.h` file (see below).
-
 Significant violations of the documented interface are flagged with debug-only assertions. Failure of these usually indicates a caller error rather than a defect in the library.
-
-## Configuration
-The header `blargg_common.h` is used to establish a common environment, and is included at the beginning of all library headers and sources. It attempts to automatically determine the features of the environment, but might need help.
-
-Every library source file has `#include "blargg_source.h"` after all other #include lines, to allow setting compiler options and disabling warnings for library sources only. Create a header file with your customizations and then define `BLARGG_SOURCE_BEGIN` to the path of that file.

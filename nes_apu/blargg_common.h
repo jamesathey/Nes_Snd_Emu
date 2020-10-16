@@ -1,13 +1,5 @@
-// Sets up common environment for Shay Green's libraries.
-// To change configuration options, modify blargg_config.h, not this file.
-
 #ifndef BLARGG_COMMON_H
 #define BLARGG_COMMON_H
-
-#include <stdlib.h>
-#include <stdint.h>
-#include <assert.h>
-#include <limits.h>
 
 typedef const char* blargg_err_t; // 0 on success, otherwise error string
 
@@ -19,7 +11,18 @@ I don't just use 'abcd' because that's implementation-dependent. */
 #define BLARGG_4CHAR( a, b, c, d ) \
 	((a&0xFF)*0x1000000 + (b&0xFF)*0x10000 + (c&0xFF)*0x100 + (d&0xFF))
 
-// User configuration can override the above macros if necessary
-#include "blargg_config.h"
+#ifdef BLARGG_DYNAMIC
+#if defined(_WIN32) && defined(_MSC_VER)
+#ifdef BLARGG_BUILD
+#define DLLEXPORT __declspec(dllexport)
+#else
+#define DLLEXPORT __declspec(dllimport)
+#endif // BLARGG_BUILD
+#else
+#define DLLEXPORT
+#endif // defined(_WIN32) && defined(_MSC_VER)
+#else
+#define DLLEXPORT
+#endif // BLARGG_DYNAMIC
 
 #endif
