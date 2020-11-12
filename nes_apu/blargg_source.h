@@ -9,32 +9,7 @@ global namespace with unprefixed names. */
 #ifndef BLARGG_COMMON_H // optimization only
 	#include "blargg_common.h"
 #endif
-#include "blargg_errors.h"
 #include "gme_custom_dprintf.h"
-
-#include <string.h> /* memcpy(), memset(), memmove() */
-#include <stddef.h> /* offsetof() */
-
-/* The following four macros are for debugging only. Some or all might be
-defined to do nothing, depending on the circumstances. Described is what
-happens when a particular macro is defined to do something. When defined to
-do nothing, the macros do NOT evaluate their argument(s). */
-
-/* If expr is false, prints file and line number, then aborts program. Meant
-for checking internal state and consistency. A failed assertion indicates a bug
-in MY code.
-
-void assert( bool expr ); */
-#include <assert.h>
-
-/* If expr is false, prints file and line number, then aborts program. Meant
-for checking caller-supplied parameters and operations that are outside the
-control of the module. A failed requirement probably indicates a bug in YOUR
-code.
-
-void require( bool expr ); */
-#undef  require
-#define require( expr ) assert( expr )
 
 /* Like printf() except output goes to debugging console/file.
 
@@ -98,29 +73,6 @@ that should be looked into, but that aren't serious problems.
 void check( bool expr ); */
 #undef  check
 #define check( expr ) ((void) 0)
-
-/* If expr yields non-NULL error string, returns it from current function,
-otherwise continues normally. */
-#undef  RETURN_ERR
-#define RETURN_ERR( expr ) \
-	do {\
-		blargg_err_t blargg_return_err_ = (expr);\
-		if ( blargg_return_err_ )\
-			return blargg_return_err_;\
-	} while ( 0 )
-
-/* If ptr is NULL, returns out-of-memory error, otherwise continues normally. */
-#undef  CHECK_ALLOC
-#define CHECK_ALLOC( ptr ) \
-	do {\
-		if ( !(ptr) )\
-			return blargg_err_memory;\
-	} while ( 0 )
-
-#if BLARGG_LEGACY
-	#define BLARGG_CHECK_ALLOC CHECK_ALLOC
-	#define BLARGG_RETURN_ERR  RETURN_ERR
-#endif
 
 /* BLARGG_SOURCE_BEGIN: If defined, #included, allowing redefition of dprintf etc.
 and check */

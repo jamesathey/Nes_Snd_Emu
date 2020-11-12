@@ -391,7 +391,7 @@ void Nes_Dmc::fill_buffer()
 {
 	if ( !buf_full && length_counter )
 	{
-		require( apu->dmc_reader ); // dmc_reader must be set
+		assert( apu->dmc_reader ); // dmc_reader must be set
 		buf = apu->dmc_reader( 0x8000u + address );
 		address = (address + 1) & 0x7FFF;
 		buf_full = true;

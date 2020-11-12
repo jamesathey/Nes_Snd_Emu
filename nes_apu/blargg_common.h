@@ -1,11 +1,6 @@
 #ifndef BLARGG_COMMON_H
 #define BLARGG_COMMON_H
 
-typedef const char* blargg_err_t; // 0 on success, otherwise error string
-
-// Success; no error
-blargg_err_t const blargg_ok = 0;
-
 /* BLARGG_4CHAR('a','b','c','d') = 'abcd' (four character integer constant).
 I don't just use 'abcd' because that's implementation-dependent. */
 #define BLARGG_4CHAR( a, b, c, d ) \

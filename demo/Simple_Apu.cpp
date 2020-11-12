@@ -35,7 +35,7 @@ void Simple_Apu::dmc_reader( int (*f)(void* user_data, int addr), void* p )
 	apu.dmc_reader = std::bind(f, p, std::placeholders::_1);
 }
 
-blargg_err_t Simple_Apu::sample_rate( long rate )
+std::error_condition Simple_Apu::sample_rate( long rate )
 {
 	apu.set_output( &buf );
 	buf.clock_rate( 1789773 );

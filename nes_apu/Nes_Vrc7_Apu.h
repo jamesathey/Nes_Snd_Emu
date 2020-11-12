@@ -3,14 +3,14 @@
 #ifndef NES_VRC7_APU_H
 #define NES_VRC7_APU_H
 
-#include "blargg_common.h"
+#include <system_error>
 #include "Blip_Buffer.h"
 
 struct vrc7_snapshot_t;
 
 class DLLEXPORT Nes_Vrc7_Apu {
 public:
-	blargg_err_t init();
+	std::error_condition init();
 
 	// See Nes_Apu.h for reference
 	void reset();

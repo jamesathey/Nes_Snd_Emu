@@ -64,7 +64,7 @@ void Blip_Buffer::clear()
 	}
 }
 
-blargg_err_t Blip_Buffer::set_sample_rate( int new_rate, int msec )
+std::error_condition Blip_Buffer::set_sample_rate( int new_rate, int msec )
 {
 	// Limit to maximum size that resampled time can represent
 	int max_size = (((blip_resampled_time_t) -1) >> BLIP_BUFFER_ACCURACY) -
@@ -78,7 +78,8 @@ blargg_err_t Blip_Buffer::set_sample_rate( int new_rate, int msec )
 	{
 		//dprintf( "%d \n", (new_size + blip_buffer_extra_) * sizeof *buffer_  );
 		void* p = realloc( buffer_, (new_size + blip_buffer_extra_) * sizeof *buffer_ );
-		CHECK_ALLOC( p );
+		if (!p)
+			return std::make_error_condition(std::errc::not_enough_memory);
 		buffer_      = (delta_t*) p;
 		buffer_center_ = buffer_ + BLIP_MAX_QUALITY/2;
 		buffer_size_ = new_size;
@@ -93,7 +94,7 @@ blargg_err_t Blip_Buffer::set_sample_rate( int new_rate, int msec )
 	
 	clear();
 	
-	return blargg_ok;
+	return {};
 }
 
 blip_resampled_time_t Blip_Buffer::clock_rate_factor( int rate ) const

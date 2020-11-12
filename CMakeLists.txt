@@ -13,8 +13,6 @@ SET(PACKAGE_STRING "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 
 # Targets
 SET(NES_SND_EMU_SOURCES
-	nes_apu/blargg_common.cpp
-	nes_apu/blargg_errors.cpp
 	nes_apu/Blip_Buffer.cpp
 	nes_apu/emu2413.c
 	nes_apu/gme_custom_dprintf.c
@@ -33,7 +31,6 @@ SET(NES_SND_EMU_SOURCES
 SET(NES_SND_EMU_HEADERS
 	nes_apu/2413tone.h
 	nes_apu/blargg_common.h
-	nes_apu/blargg_errors.h
 	nes_apu/blargg_source.h
 	nes_apu/Blip_Buffer.h
 	nes_apu/Blip_Buffer_impl.h

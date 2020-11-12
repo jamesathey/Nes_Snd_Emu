@@ -43,7 +43,7 @@ Nes_Vrc6_Apu::Nes_Vrc6_Apu()
 
 void Nes_Vrc6_Apu::run_until( blip_time_t time )
 {
-	require( time >= last_time );
+	assert( time >= last_time );
 	run_square( oscs [0], time );
 	run_square( oscs [1], time );
 	run_saw( time );
@@ -52,8 +52,8 @@ void Nes_Vrc6_Apu::run_until( blip_time_t time )
 
 void Nes_Vrc6_Apu::write_osc( blip_time_t time, int osc_index, int reg, int data )
 {
-	require( (unsigned) osc_index < osc_count );
-	require( (unsigned) reg < reg_count );
+	assert( (unsigned) osc_index < osc_count );
+	assert( (unsigned) reg < reg_count );
 	
 	run_until( time );
 	oscs [osc_index].regs [reg] = data;

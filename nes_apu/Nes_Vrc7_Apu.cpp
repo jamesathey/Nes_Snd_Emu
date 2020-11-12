@@ -20,16 +20,18 @@ Nes_Vrc7_Apu::Nes_Vrc7_Apu()
 	opll = 0;
 }
 
-blargg_err_t Nes_Vrc7_Apu::init()
+std::error_condition Nes_Vrc7_Apu::init()
 {
-	CHECK_ALLOC( opll = OPLL_new( 3579545, 3579545 / 72 ) );
+	opll = OPLL_new(3579545, 3579545 / 72);
+	if (!opll)
+		return std::make_error_condition(std::errc::not_enough_memory);
 	OPLL_SetChipMode((OPLL *) opll, 1);
 	OPLL_setPatch((OPLL *) opll, vrc7_inst);
 
 	set_output( 0 );
 	volume( 1.0 );
 	reset();
-	return 0;
+	return {};
 }
 
 Nes_Vrc7_Apu::~Nes_Vrc7_Apu()
@@ -165,7 +167,7 @@ void Nes_Vrc7_Apu::load_snapshot( vrc7_snapshot_t const& in )
 
 void Nes_Vrc7_Apu::run_until( blip_time_t end_time )
 {
-	require( end_time > next_time );
+	assert( end_time > next_time );
 
 	blip_time_t time = next_time;
 	void* opll = this->opll; // cache

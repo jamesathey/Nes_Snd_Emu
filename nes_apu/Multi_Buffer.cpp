@@ -52,9 +52,11 @@ Mono_Buffer::Mono_Buffer() : Multi_Buffer( 1 )
 
 Mono_Buffer::~Mono_Buffer() { }
 
-blargg_err_t Mono_Buffer::set_sample_rate( int rate, int msec )
+std::error_condition Mono_Buffer::set_sample_rate( int rate, int msec )
 {
-	RETURN_ERR( buf.set_sample_rate( rate, msec ) );
+	std::error_condition err = buf.set_sample_rate( rate, msec );
+	if (err)
+		return err;
 	return Multi_Buffer::set_sample_rate( buf.sample_rate(), buf.length() );
 }
 
@@ -137,11 +139,14 @@ Stereo_Buffer::Stereo_Buffer() : Multi_Buffer( 2 )
 
 Stereo_Buffer::~Stereo_Buffer() { }
 
-blargg_err_t Stereo_Buffer::set_sample_rate( int rate, int msec )
+std::error_condition Stereo_Buffer::set_sample_rate( int rate, int msec )
 {
 	mixer.samples_read = 0;
-	for ( int i = bufs_size; --i >= 0; )
-		RETURN_ERR( bufs [i].set_sample_rate( rate, msec ) );
+	for (int i = bufs_size; --i >= 0; ) {
+		std::error_condition err = bufs[i].set_sample_rate(rate, msec);
+		if (err)
+			return err;
+	}
 	return Multi_Buffer::set_sample_rate( bufs [0].sample_rate(), bufs [0].length() );
 }
 
@@ -172,7 +177,7 @@ void Stereo_Buffer::end_frame( blip_time_t time )
 
 int Stereo_Buffer::read_samples( blip_sample_t out [], int out_size )
 {
-	require( (out_size & 1) == 0 ); // must read an even number of samples
+	assert( (out_size & 1) == 0 ); // must read an even number of samples
 	out_size = std::min( out_size, samples_avail() );
 
 	int pair_count = int (out_size >> 1);

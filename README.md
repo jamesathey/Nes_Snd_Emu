@@ -107,7 +107,7 @@ void render_frame()
 
 void init()
 {
-	blargg_err_t error = buf.sample_rate( 44100 );
+	std::error_condition error = buf.sample_rate( 44100 );
 	if ( error )
 		report_error( error );
 	buf.clock_rate( 1789773 );
@@ -244,7 +244,7 @@ void render_video_frame()
 
 void init()
 {
-	blargg_err_t error = buf.sample_rate( 44100 );
+	std::error_condition error = buf.sample_rate( 44100 );
 	if ( error )
 		report_error( error );
 	buf.clock_rate( 1789773 );
@@ -268,6 +268,6 @@ If you're having problems, check the following:
 * See if the demo works.
 
 ## Error handling
-Functions which can fail have a return type of blargg_err_t, which is a pointer to an error string (`const char*`). If the function is successful it returns blargg_success (NULL), otherwise it returns a pointer to an error string.
+Functions which can fail have a return type of `std::error_condition`, which is a portable error construct included with C++11 and later.
 
 Significant violations of the documented interface are flagged with debug-only assertions. Failure of these usually indicates a caller error rather than a defect in the library.

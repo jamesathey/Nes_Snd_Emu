@@ -3,6 +3,7 @@
 #ifndef MULTI_BUFFER_H
 #define MULTI_BUFFER_H
 
+#include <system_error>
 #include "blargg_common.h"
 #include "Blip_Buffer.h"
 
@@ -19,7 +20,7 @@ public:
 	// (type information used by Effects_Buffer)
 	enum { type_index_mask = 0xFF };
 	enum { wave_type = 0x100, noise_type = 0x200, mixed_type = wave_type | noise_type };
-	virtual blargg_err_t set_channel_count( int, int const types [] = nullptr );
+	virtual std::error_condition set_channel_count( int, int const types [] = nullptr );
 	int channel_count() const                           { return channel_count_; }
 	
 	// Gets indexed channel, from 0 to channel_count()-1
@@ -38,7 +39,7 @@ public:
 	unsigned channels_changed_count()                   { return channels_changed_count_; }
 	
 	// See Blip_Buffer.h
-	virtual blargg_err_t set_sample_rate(int rate, int msec = blip_default_length);
+	virtual std::error_condition set_sample_rate(int rate, int msec = blip_default_length);
 	int sample_rate() const;
 	int length() const;
 	virtual void clock_rate(int);
@@ -83,7 +84,7 @@ public:
 public:
 	Mono_Buffer();
 	~Mono_Buffer();
-	virtual blargg_err_t set_sample_rate( int rate, int msec = blip_default_length );
+	virtual std::error_condition set_sample_rate( int rate, int msec = blip_default_length );
 	virtual void clock_rate( int rate )                     { buf.clock_rate( rate ); }
 	virtual void bass_freq( int freq )                      { buf.bass_freq( freq ); }
 	virtual void clear()                                    { buf.clear(); }
@@ -149,7 +150,7 @@ public:
 public:
 	Stereo_Buffer();
 	~Stereo_Buffer();
-	virtual blargg_err_t set_sample_rate( int, int msec = blip_default_length );
+	virtual std::error_condition set_sample_rate( int, int msec = blip_default_length );
 	virtual void clock_rate( int );
 	virtual void bass_freq( int );
 	virtual void clear();
@@ -173,7 +174,7 @@ class Silent_Buffer : public Multi_Buffer {
 	channel_t chan;
 public:
 	Silent_Buffer();
-	virtual blargg_err_t set_sample_rate( int rate, int msec = blip_default_length );
+	virtual std::error_condition set_sample_rate( int rate, int msec = blip_default_length );
 	virtual void clock_rate( int )                  { }
 	virtual void bass_freq( int )                   { }
 	virtual void clear()                            { }
@@ -184,11 +185,11 @@ public:
 };
 
 
-inline blargg_err_t Multi_Buffer::set_sample_rate( int rate, int msec )
+inline std::error_condition Multi_Buffer::set_sample_rate( int rate, int msec )
 {
 	sample_rate_ = rate;
 	length_ = msec;
-	return blargg_ok;
+	return {};
 }
 
 inline int  Multi_Buffer::samples_per_frame() const             { return samples_per_frame_; }
@@ -201,14 +202,14 @@ inline void Multi_Buffer::end_frame( blip_time_t )              { }
 inline int  Multi_Buffer::read_samples( blip_sample_t [], int ) { return 0; }
 inline int  Multi_Buffer::samples_avail() const                 { return 0; }
 
-inline blargg_err_t Multi_Buffer::set_channel_count( int n, int const types [] )
+inline std::error_condition Multi_Buffer::set_channel_count( int n, int const types [] )
 {
 	channel_count_ = n;
 	channel_types_ = types;
-	return blargg_ok;
+	return {};
 }
 
-inline blargg_err_t Silent_Buffer::set_sample_rate( int rate, int msec )
+inline std::error_condition Silent_Buffer::set_sample_rate( int rate, int msec )
 {
 	return Multi_Buffer::set_sample_rate( rate, msec );
 }

@@ -3,9 +3,10 @@
 #ifndef BLIP_BUFFER_H
 #define BLIP_BUFFER_H
 
+#include <cstdint>
+#include <system_error>
 #include "blargg_common.h"
 #include "Blip_Buffer_impl.h"
-#include <stdint.h>
 
 typedef int blip_time_t;                    // Source clocks in current time frame
 typedef int16_t blip_sample_t;       // 16-bit signed output sample
@@ -18,7 +19,7 @@ class DLLEXPORT Blip_Buffer : public Blip_Buffer_ {
 public:
 
 	// Sets output sample rate and resizes and clears sample buffer
-	blargg_err_t set_sample_rate( int samples_per_sec, int msec_length = blip_default_length );
+	std::error_condition set_sample_rate( int samples_per_sec, int msec_length = blip_default_length );
 	
 	// Sets number of source time units per second
 	void clock_rate( int clocks_per_sec );

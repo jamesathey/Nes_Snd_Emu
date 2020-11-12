@@ -21,7 +21,7 @@ public:
 	void dmc_reader( int (*callback)( void* user_data, int ), void* user_data = NULL );
 	
 	// Set output sample rate
-	blargg_err_t sample_rate( long rate );
+	std::error_condition sample_rate( long rate );
 	
 	// Write to register (0x4000-0x4017, except 0x4014 and 0x4016)
 	void write_register(int addr, int data );
