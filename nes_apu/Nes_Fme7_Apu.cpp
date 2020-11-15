@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU Lesser General Public
 License along with this module; if not, write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA */
 
+#include <cstring>
 #include "blargg_source.h"
 
 void Nes_Fme7_Apu::reset()
