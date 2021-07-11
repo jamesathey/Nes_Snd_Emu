@@ -8,16 +8,11 @@ extern "C" {
 
 #include "blargg_source.h"
 
-static unsigned char vrc7_inst[(16 + 3) * 8] =
-{
-#include "vrc7tone.h"
-};
-
 int const period = 36; // NES CPU clocks per FM clock
 
 Nes_Vrc7_Apu::Nes_Vrc7_Apu()
 {
-	opll = 0;
+	opll = nullptr;
 }
 
 std::error_condition Nes_Vrc7_Apu::init()
@@ -25,10 +20,9 @@ std::error_condition Nes_Vrc7_Apu::init()
 	opll = OPLL_new(3579545, 3579545 / 72);
 	if (!opll)
 		return std::make_error_condition(std::errc::not_enough_memory);
-	OPLL_SetChipMode((OPLL *) opll, 1);
-	OPLL_setPatch((OPLL *) opll, vrc7_inst);
+	OPLL_setChipType((OPLL *)opll, OPLL_VRC7_TONE);
 
-	set_output( 0 );
+	set_output(nullptr);
 	volume( 1.0 );
 	reset();
 	return {};
@@ -83,7 +77,8 @@ void Nes_Vrc7_Apu::reset()
 			osc.regs [j] = 0;
 	}
 
-	OPLL_reset( (OPLL *) opll );
+	OPLL_reset((OPLL *) opll);
+	OPLL_resetPatch((OPLL *)opll, OPLL_VRC7_TONE);
 }
 
 void Nes_Vrc7_Apu::write_reg( int data )
@@ -102,8 +97,8 @@ void Nes_Vrc7_Apu::write_data( blip_time_t time, int data )
 
 	if ( time > next_time )
 		run_until( time );
-	OPLL_writeIO( (OPLL *) opll, 0, addr );
-	OPLL_writeIO( (OPLL *) opll, 1, data );
+
+	OPLL_writeReg((OPLL*)opll, addr, data);
 }
 
 void Nes_Vrc7_Apu::end_frame( blip_time_t time )
@@ -170,26 +165,27 @@ void Nes_Vrc7_Apu::run_until( blip_time_t end_time )
 	assert( end_time > next_time );
 
 	blip_time_t time = next_time;
-	void* opll = this->opll; // cache
-	Blip_Buffer* const mono_output = mono.output;
-	e_int32 buffer [2];
-	e_int32* buffers[2] = {&buffer[0], &buffer[1]};
+	//Blip_Buffer* const mono_output = mono.output;
+	//int32_t buffer [2];
+	//e_int32* buffers[2] = {&buffer[0], &buffer[1]};
+	/*
 	if ( mono_output )
 	{
+	*/
 		// optimal case
 		do
 		{
-			OPLL_calc_stereo( (OPLL *) opll, buffers, 1, -1 );
-			int amp = buffer [0] + buffer [1];
+			int amp = OPLL_calc((OPLL*)this->opll);
 			int delta = amp - mono.last_amp;
-			if ( delta )
+			if (delta)
 			{
 				mono.last_amp = amp;
-				synth.offset_inline( time, delta, mono_output );
+				synth.offset_inline( time, delta, mono.output );
 			}
 			time += period;
 		}
 		while ( time < end_time );
+	/*
 	}
 	else
 	{
@@ -216,5 +212,6 @@ void Nes_Vrc7_Apu::run_until( blip_time_t end_time )
 		}
 		while ( time < end_time );
 	}
+	*/
 	next_time = time;
 }

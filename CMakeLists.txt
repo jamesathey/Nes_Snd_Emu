@@ -13,8 +13,8 @@ SET(PACKAGE_STRING "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 
 # Targets
 SET(NES_SND_EMU_SOURCES
+	emu2413/emu2413.c
 	nes_apu/Blip_Buffer.cpp
-	nes_apu/emu2413.c
 	nes_apu/gme_custom_dprintf.c
 	nes_apu/Multi_Buffer.cpp
 	nes_apu/Nes_Apu.cpp
@@ -29,14 +29,12 @@ SET(NES_SND_EMU_SOURCES
 )
 
 SET(NES_SND_EMU_HEADERS
-	nes_apu/2413tone.h
+	emu2413/emu2413.h
 	nes_apu/blargg_common.h
 	nes_apu/blargg_source.h
 	nes_apu/Blip_Buffer.h
 	nes_apu/Blip_Buffer_impl.h
 	nes_apu/Blip_Buffer_impl2.h
-	nes_apu/emu2413.h
-	nes_apu/emutypes.h
 	nes_apu/gme_custom_dprintf.h
 	nes_apu/Multi_Buffer.h
 	nes_apu/Nes_Apu.h
@@ -48,7 +46,6 @@ SET(NES_SND_EMU_HEADERS
 	nes_apu/Nes_Vrc6_Apu.h
 	nes_apu/Nes_Vrc7_Apu.h
 	nes_apu/panning.h
-	nes_apu/vrc7tone.h
 )
 
 SET(NES_SND_EMU_DOCS
@@ -57,15 +54,15 @@ SET(NES_SND_EMU_DOCS
 
 ADD_LIBRARY(Nes_Snd_Emu SHARED ${NES_SND_EMU_SOURCES} ${NES_SND_EMU_HEADERS} ${NES_SND_EMU_DOCS})
 SET_TARGET_PROPERTIES(Nes_Snd_Emu PROPERTIES VERSION ${VERSION})
-TARGET_INCLUDE_DIRECTORIES(Nes_Snd_Emu PUBLIC ${PROJECT_SOURCE_DIR})
+TARGET_INCLUDE_DIRECTORIES(Nes_Snd_Emu PUBLIC ${PROJECT_SOURCE_DIR} emu2413)
 TARGET_COMPILE_DEFINITIONS(Nes_Snd_Emu PUBLIC BLARGG_DYNAMIC PRIVATE BLARGG_BUILD)
+TARGET_COMPILE_FEATURES(Nes_Snd_Emu PUBLIC cxx_std_11)
 IF(MSVC)
 	# windows.h defines min and max, and std::min and std::max aren't defined in <algorithm> without this macro
 	TARGET_COMPILE_DEFINITIONS(Nes_Snd_Emu PRIVATE NOMINMAX)
+	# stdlib.h on Windows defines min and max preprocessor macros by default as a "language extensions"
+	TARGET_COMPILE_DEFINITIONS(Nes_Snd_Emu PRIVATE _CRT_DECLARE_NONSTDC_NAMES=0)
 ENDIF()
-
-SET_PROPERTY(TARGET Nes_Snd_Emu PROPERTY CXX_STANDARD 11)
-SET_PROPERTY(TARGET Nes_Snd_Emu PROPERTY CXX_STANDARD_REQUIRED ON)
 
 FIND_PACKAGE(SDL2)
 IF(SDL2_FOUND)
@@ -74,12 +71,10 @@ IF(SDL2_FOUND)
 	# Sound_Queue is not LGPL; it can be static
 	ADD_LIBRARY(SDL_Sound_Queue STATIC sound_queue/Sound_Queue.cpp sound_queue/Sound_Queue.h)
 	TARGET_INCLUDE_DIRECTORIES(SDL_Sound_Queue PRIVATE ${SDL2_INCLUDE_DIR} INTERFACE ${PROJECT_SOURCE_DIR}/sound_queue)
-	SET_PROPERTY(TARGET SDL_Sound_Queue PROPERTY CXX_STANDARD 11)
-	SET_PROPERTY(TARGET SDL_Sound_Queue PROPERTY CXX_STANDARD_REQUIRED ON)
+	TARGET_COMPILE_FEATURES(SDL_Sound_Queue PUBLIC cxx_std_11)
 
 	SET(DEMO_SOURCES demo/demo.cpp demo/Simple_Apu.cpp demo/Simple_Apu.h demo/Wave_Writer.cpp demo/Wave_Writer.hpp)
 	ADD_EXECUTABLE(demo ${DEMO_SOURCES})
 	TARGET_LINK_LIBRARIES(demo PRIVATE Nes_Snd_Emu SDL_Sound_Queue SDL2::SDL2)
-	SET_PROPERTY(TARGET demo PROPERTY CXX_STANDARD 11)
-	SET_PROPERTY(TARGET demo PROPERTY CXX_STANDARD_REQUIRED ON)
+	TARGET_COMPILE_FEATURES(demo PUBLIC cxx_std_11)
 ENDIF()

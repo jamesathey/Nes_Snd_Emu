@@ -1,0 +1,3 @@
+[submodule "emu2413"]
+	path = emu2413
+	url = https://github.com/digital-sound-antiques/emu2413.git
