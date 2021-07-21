@@ -28,11 +28,11 @@ public:
 	// Writes to register (0x4000-0x4013, and 0x4015 and 0x4017)
 	enum { io_addr = 0x4000 };
 	enum { io_size = 0x18 };
-	void write_register( nes_time_t, int addr, int data );
+	void write_register( nes_time_t, uint16_t addr, uint8_t data );
 	
 	// Reads from status register (0x4015)
 	enum { status_addr = 0x4015 };
-	int read_status( nes_time_t );
+	uint8_t read_status( nes_time_t );
 	
 	// Runs all oscillators up to specified time, ends current time frame, then
 	// starts a new time frame at time 0. Time frames have no effect on emulation
@@ -45,7 +45,7 @@ public:
 	// Uses PAL timing if pal_timing is true, otherwise use NTSC timing.
 	// Sets the DMC oscillator's initial DAC value to initial_dmc_dac without
 	// any audible click.
-	void reset( bool pal_mode = false, int initial_dmc_dac = 0 );
+	void reset( bool pal_mode = false, uint8_t initial_dmc_dac = 0 );
 	
 	// Same as set_output(), but for a particular channel
 	// 0: Square 1, 1: Square 2, 2: Triangle, 3: Noise, 4: DMC
@@ -153,9 +153,6 @@ private:
 	void irq_changed();
 	void state_restored();
 	void run_until_( nes_time_t );
-	
-	// TODO: remove
-	friend class Nes_Core;
 };
 
 inline void Nes_Apu::set_output( int osc, Blip_Buffer* buf )

@@ -27,7 +27,7 @@ public:
 	enum { reg_count = 3 };
 	enum { base_addr = 0x9000 };
 	enum { addr_step = 0x1000 };
-	void write_osc( blip_time_t, int osc, int reg, int data );
+	void write_osc( blip_time_t, int osc, int reg, uint8_t data );
 	
 public:
 	Nes_Vrc6_Apu();

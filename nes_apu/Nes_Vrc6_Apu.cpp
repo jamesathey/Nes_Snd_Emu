@@ -50,7 +50,7 @@ void Nes_Vrc6_Apu::run_until( blip_time_t time )
 	last_time = time;
 }
 
-void Nes_Vrc6_Apu::write_osc( blip_time_t time, int osc_index, int reg, int data )
+void Nes_Vrc6_Apu::write_osc( blip_time_t time, int osc_index, int reg, uint8_t data )
 {
 	assert( (unsigned) osc_index < osc_count );
 	assert( (unsigned) reg < reg_count );

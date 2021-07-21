@@ -19,13 +19,13 @@ public:
 	void reset();
 	enum { io_addr = 0x4040 };
 	enum { io_size = 0x53 };
-	void write( blip_time_t time, unsigned addr, int data );
-	int read( blip_time_t time, unsigned addr );
+	void write( blip_time_t time, uint16_t addr, uint8_t data );
+	uint8_t read( blip_time_t time, uint16_t addr );
 	void end_frame( blip_time_t );
 	
 public:
 	Nes_Fds_Apu();
-	void write_( unsigned addr, int data );
+	void write_( uint16_t addr, uint8_t data );
 	
 	void set_output( int index, Blip_Buffer* center,
 			Blip_Buffer* left_ignored = nullptr, Blip_Buffer* right_ignored = nullptr );
@@ -36,7 +36,7 @@ private:
 	enum { vol_max         = 0x20 };
 	enum { wave_sample_max = 0x3F };
 	
-	unsigned char regs_ [io_size];// last written value to registers
+	uint8_t regs_ [io_size];// last written value to registers
 	
 	enum { lfo_base_tempo = 8 };
 	int lfo_tempo; // normally 8; adjusted by set_tempo()   
@@ -71,7 +71,7 @@ private:
 #endif
 	
 	// allow access to registers by absolute address (i.e. 0x4080)
-	unsigned char& regs( unsigned addr ) { return regs_ [addr - io_addr]; }
+	uint8_t& regs( unsigned addr ) { return regs_ [addr - io_addr]; }
 	
 	void run_until( blip_time_t );
 };
@@ -100,17 +100,17 @@ inline void Nes_Fds_Apu::end_frame( blip_time_t end_time )
 	assert( last_time >= 0 );
 }
 
-inline void Nes_Fds_Apu::write( blip_time_t time, unsigned addr, int data )
+inline void Nes_Fds_Apu::write( blip_time_t time, uint16_t addr, uint8_t data )
 {
 	run_until( time );
 	write_( addr, data );
 }
 
-inline int Nes_Fds_Apu::read( blip_time_t time, unsigned addr )
+inline uint8_t Nes_Fds_Apu::read( blip_time_t time, uint16_t addr )
 {
 	run_until( time );
 	
-	int result = 0xFF;
+	uint8_t result = 0xFF;
 	switch ( addr )
 	{
 	case 0x4090:
@@ -122,7 +122,7 @@ inline int Nes_Fds_Apu::read( blip_time_t time, unsigned addr )
 		break;
 	
 	default:
-		unsigned i = addr - io_addr;
+		uint32_t i = (uint32_t)addr - io_addr;
 		if ( i < wave_size )
 			result = regs_ [i];
 	}

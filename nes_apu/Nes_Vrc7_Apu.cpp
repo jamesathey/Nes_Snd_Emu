@@ -81,12 +81,12 @@ void Nes_Vrc7_Apu::reset()
 	OPLL_resetPatch((OPLL *)opll, OPLL_VRC7_TONE);
 }
 
-void Nes_Vrc7_Apu::write_reg( int data )
+void Nes_Vrc7_Apu::write_reg( uint8_t data )
 {
 	addr = data;
 }
 
-void Nes_Vrc7_Apu::write_data( blip_time_t time, int data )
+void Nes_Vrc7_Apu::write_data( blip_time_t time, uint8_t data )
 {
 	int type = (addr >> 4) - 1;
 	int chan = addr & 15;

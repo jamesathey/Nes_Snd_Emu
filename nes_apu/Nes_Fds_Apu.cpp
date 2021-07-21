@@ -46,9 +46,9 @@ void Nes_Fds_Apu::reset()
 	}
 }
 
-void Nes_Fds_Apu::write_( unsigned addr, int data )
+void Nes_Fds_Apu::write_( uint16_t addr, uint8_t data )
 {
-	unsigned reg = addr - io_addr;
+	uint32_t reg = (uint32_t)addr - io_addr;
 	if ( reg < io_size )
 	{
 		if ( reg < wave_size )

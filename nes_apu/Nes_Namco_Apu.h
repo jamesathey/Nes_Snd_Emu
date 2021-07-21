@@ -21,12 +21,12 @@ public:
 	
 	// Read/write data register is at 0x4800
 	enum { data_reg_addr = 0x4800 };
-	void write_data( blip_time_t, int );
-	int read_data();
+	void write_data( blip_time_t, uint8_t );
+	uint8_t read_data();
 	
 	// Write-only address register is at 0xF800
 	enum { addr_reg_addr = 0xF800 };
-	void write_addr( int );
+	void write_addr( uint8_t );
 	
 	// to do: implement save/restore
 	void save_state( namco_state_t* out ) const;
@@ -88,9 +88,9 @@ inline void Nes_Namco_Apu::volume( double v ) { synth.volume( 0.10 / osc_count /
 
 inline void Nes_Namco_Apu::treble_eq( const blip_eq_t& eq ) { synth.treble_eq( eq ); }
 
-inline void Nes_Namco_Apu::write_addr( int v ) { addr_reg = v; }
+inline void Nes_Namco_Apu::write_addr( uint8_t v ) { addr_reg = v; }
 
-inline int Nes_Namco_Apu::read_data() { return access(); }
+inline uint8_t Nes_Namco_Apu::read_data() { return access(); }
 
 inline void Nes_Namco_Apu::set_output( int i, Blip_Buffer* buf )
 {
@@ -98,7 +98,7 @@ inline void Nes_Namco_Apu::set_output( int i, Blip_Buffer* buf )
 	oscs [i].output = buf;
 }
 
-inline void Nes_Namco_Apu::write_data( blip_time_t time, int data )
+inline void Nes_Namco_Apu::write_data( blip_time_t time, uint8_t data )
 {
 	run_until( time );
 	access() = data;

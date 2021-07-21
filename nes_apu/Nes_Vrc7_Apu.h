@@ -23,8 +23,8 @@ public:
 	void save_snapshot( vrc7_snapshot_t* ) const;
 	void load_snapshot( vrc7_snapshot_t const& );
 
-	void write_reg( int reg );
-	void write_data( blip_time_t, int data );
+	void write_reg( uint8_t reg );
+	void write_data( blip_time_t, uint8_t data );
 
 public:
 	Nes_Vrc7_Apu();

@@ -84,7 +84,7 @@ void Nes_Apu::set_tempo( double t )
 		frame_period = (int) (frame_period / t) & ~1; // must be even
 }
 
-void Nes_Apu::reset( bool pal_mode, int initial_dmc_dac )
+void Nes_Apu::reset( bool pal_mode, uint8_t initial_dmc_dac )
 {
 	dmc.pal_mode = pal_mode;
 	set_tempo( tempo_ );
@@ -105,7 +105,7 @@ void Nes_Apu::reset( bool pal_mode, int initial_dmc_dac )
 	write_register( 0, 0x4017, 0x00 );
 	write_register( 0, 0x4015, 0x00 );
 	
-	for ( int addr = io_addr; addr <= 0x4013; addr++ )
+	for ( uint16_t addr = io_addr; addr <= 0x4013; addr++ )
 		write_register( 0, addr, (addr & 3) ? 0x00 : 0x10 );
 	
 	dmc.dac = initial_dmc_dac;
@@ -280,13 +280,12 @@ static const unsigned char length_table [0x20] = {
 	0xC0, 0x18, 0x48, 0x1A, 0x10, 0x1C, 0x20, 0x1E
 };
 
-void Nes_Apu::write_register( blip_time_t time, int addr, int data )
+void Nes_Apu::write_register( blip_time_t time, uint16_t addr, uint8_t data )
 {
 	assert( addr > 0x20 ); // addr must be actual address (i.e. 0x40xx)
-	assert( (unsigned) data <= 0xFF );
 	
 	// Ignore addresses outside range
-	if ( unsigned (addr - io_addr) >= io_size )
+	if ((addr < io_addr) || addr > (io_addr + io_size))
 		return;
 	
 	run_until_( time );
@@ -367,11 +366,11 @@ void Nes_Apu::write_register( blip_time_t time, int addr, int data )
 	}
 }
 
-int Nes_Apu::read_status( blip_time_t time )
+uint8_t Nes_Apu::read_status( blip_time_t time )
 {
 	run_until_( time - 1 );
 	
-	int result = (dmc.irq_flag << 7) | (irq_flag << 6);
+	uint8_t result = (dmc.irq_flag << 7) | (irq_flag << 6);
 	
 	for ( int i = 0; i < osc_count; i++ )
 		if ( oscs [i]->length_counter )

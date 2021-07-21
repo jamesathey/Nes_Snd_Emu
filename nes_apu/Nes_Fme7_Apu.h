@@ -34,10 +34,10 @@ public:
 	enum { latch_addr = 0xC000 };
 	
 	// (addr & addr_mask) == latch_addr
-	void write_latch( int );
+	void write_latch( uint8_t addr );
 	
 	// (addr & addr_mask) == data_addr
-	void write_data( blip_time_t, int data );
+	void write_data( blip_time_t, uint8_t data );
 	
 public:
 	Nes_Fme7_Apu();
@@ -96,11 +96,11 @@ inline Nes_Fme7_Apu::Nes_Fme7_Apu()
 	reset();
 }
 
-inline void Nes_Fme7_Apu::write_latch( int data ) { latch = data; }
+inline void Nes_Fme7_Apu::write_latch( uint8_t data ) { latch = data; }
 
-inline void Nes_Fme7_Apu::write_data( blip_time_t time, int data )
+inline void Nes_Fme7_Apu::write_data( blip_time_t time, uint8_t data )
 {
-	if ( (unsigned) latch >= reg_count )
+	if ( latch >= reg_count )
 	{
 		#ifdef dprintf
 			dprintf( "FME7 write to %02X (past end of sound registers)\n", (int) latch );
