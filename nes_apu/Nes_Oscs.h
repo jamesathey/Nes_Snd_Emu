@@ -59,8 +59,9 @@ struct Nes_Square : Nes_Envelope
 	
 	typedef Blip_Synth_Norm Synth;
 	Synth const& synth; // shared between squares
+	const int min_period;
 	
-	Nes_Square( Synth const* s ) : synth( *s ) { }
+	Nes_Square(Synth const* s, int minimumPeriod=8) : synth( *s ), min_period(minimumPeriod) { }
 	
 	void clock_sweep( int adjust );
 	void run( nes_time_t, nes_time_t );

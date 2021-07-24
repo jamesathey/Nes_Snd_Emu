@@ -109,7 +109,7 @@ void Nes_Square::run( nes_time_t time, nes_time_t end_time )
 		offset = 0;
 	
 	const int volume = this->volume();
-	if ( volume == 0 || period < 8 || (period + offset) >= 0x800 )
+	if ( volume == 0 || period < min_period || (period + offset) >= 0x800 )
 	{
 		if ( last_amp )
 		{

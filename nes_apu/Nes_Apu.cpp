@@ -1,16 +1,18 @@
+/* Copyright (C) 2003-2008 Shay Green
+   Copyright (C) 2020-2021 James Athey
+
+   This module is free software; you can redistribute it and/or modify it under
+   the terms of the GNU Lesser General Public License as published by the Free
+   Software Foundation; either version 2.1 of the License, or (at your option)
+   any later version. This module is distributed in the hope that it will be
+   useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
+   General Public License for more details. You should have received a copy of
+   the GNU Lesser General Public License along with this module; if not, write
+   to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+   Boston, MA 02110-1301 USA */
+
 #include "Nes_Apu.h"
-
-/* Copyright (C) 2003-2008 Shay Green. This module is free software; you
-can redistribute it and/or modify it under the terms of the GNU Lesser
-General Public License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version. This
-module is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
-details. You should have received a copy of the GNU Lesser General Public
-License along with this module; if not, write to the Free Software Foundation,
-Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA */
-
 #include "blargg_source.h"
 
 int const amp_range = 15;
@@ -310,7 +312,7 @@ void Nes_Apu::write_register( blip_time_t time, uint16_t addr, uint8_t data )
 		{
 			// load length counter
 			if ( (osc_enables >> osc_index) & 1 )
-				osc->length_counter = length_table [(data >> 3) & 0x1F];
+				osc->length_counter = length_table [data >> 3];
 			
 			// reset square phase
 			if ( osc_index < 2 )

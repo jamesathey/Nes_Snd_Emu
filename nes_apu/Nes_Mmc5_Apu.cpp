@@ -22,14 +22,9 @@ Nes_Mmc5_Apu::Nes_Mmc5_Apu() :
 	pcm_mode(WRITE_MODE),
 	irq_enable(false),
 	irq_flag(false),
-	square1(&square_synth),
-	square2(&square_synth)
+	square1(&square_synth, 0),
+	square2(&square_synth, 0)
 {
-
-	oscs[0] = &square1;
-	oscs[1] = &square2;
-	//oscs[2] = &pcm;
-
 	set_output(nullptr);
 	volume(1.0);
 	reset();
@@ -54,8 +49,19 @@ void Nes_Mmc5_Apu::volume(double v)
 void Nes_Mmc5_Apu::set_output(int osc, Blip_Buffer* buf)
 {
 	assert((unsigned)osc < osc_count);
-	oscs[osc]->output = buf;
+	switch (osc) {
+	case 0:
+		square1.output = buf;
+		break;
+	case 1:
+		square2.output = buf;
+		break;
+	case 2:
+		//pcm.output = buf;
+		break;
+	}
 }
+
 
 void Nes_Mmc5_Apu::set_output( Blip_Buffer* b )
 {
@@ -63,6 +69,7 @@ void Nes_Mmc5_Apu::set_output( Blip_Buffer* b )
 	set_output( 1, b );
 	//set_output( 2, b );
 }
+
 
 void Nes_Mmc5_Apu::set_tempo(double t)
 {
@@ -83,7 +90,8 @@ void Nes_Mmc5_Apu::reset()
 	//pcm.reset();
 
 	last_time = 0;
-	osc_enables = 0;
+	square1_enabled = false;
+	square2_enabled = false;
 	irq_flag = false;
 	frame_delay = 1;
 	write_register(0, 0x5015, 0);
@@ -123,27 +131,12 @@ void Nes_Mmc5_Apu::run_until_(blip_time_t end_time)
 
 		// take frame-specific actions
 		frame_delay = frame_period;
-		switch (frame++)
-		{
-		case 0:
-		case 2:
-			// clock length and sweep on frames 0 and 2
-			square1.clock_length(0x20);
-			square2.clock_length(0x20);
 
-			square1.clock_sweep(-1);
-			square2.clock_sweep(0);
-			break;
-
-		case 1:
-			break;
-
-		case 3:
-			frame = 0;
-			break;
-		}
-
-		// clock envelopes and linear counter every frame
+		// MMC5 clocks the envelopes and length counters of the pulse channels every frame at a fixed 240 Hz
+		square1.clock_length(0x20);
+		square2.clock_length(0x20);
+		//square1.clock_sweep(-1);
+		//square2.clock_sweep(0);
 		square1.clock_envelope();
 		square2.clock_envelope();
 	}
@@ -181,9 +174,6 @@ static const unsigned char length_table[0x20] = {
 
 void Nes_Mmc5_Apu::write_register(blip_time_t time, uint16_t addr, uint8_t data)
 {
-	assert(addr > 0x20); // addr must be actual address (i.e. 0x40xx)
-	assert((unsigned)data <= 0xFF);
-
 	// Ignore addresses outside range
 	if (addr < regs_addr || addr >= (regs_addr + regs_size))
 		return;
@@ -193,47 +183,64 @@ void Nes_Mmc5_Apu::write_register(blip_time_t time, uint16_t addr, uint8_t data)
 	switch (addr)
 	{
 	case 0x5000: // Square 1
-	case 0x5002:
-	case 0x5003:
-	case 0x5004: // Square 2
-	case 0x5006:
-	case 0x5007:
-	{
-		// Write to channel
-		int osc_index = (addr - regs_addr) >> 2;
-		Nes_Osc* osc = oscs[osc_index];
-
-		int reg = addr & 3;
-		osc->regs[reg] = data;
-		osc->reg_written[reg] = true;
-
-		if (reg == 3)
-		{
-			// load length counter
-			if ((osc_enables >> osc_index) & 1)
-				osc->length_counter = length_table[(data >> 3) & 0x1F];
-
-			// reset square phase
-			((Nes_Square*)osc)->phase = Nes_Square::phase_range - 1;
-		}
+		square1.regs[0] = data;
+		square1.reg_written[0] = true;
 		break;
-	}
+
+	case 0x5002:
+		square1.regs[2] = data;
+		square1.reg_written[2] = true;
+		break;
+
+	case 0x5003:
+		square1.regs[3] = data;
+		square1.reg_written[3] = true;
+		// load length counter
+		if (square1_enabled)
+			square1.length_counter = length_table[data >> 3];
+
+		// reset square phase
+		square1.phase = Nes_Square::phase_range - 1;
+		break;
+
+	case 0x5004: // Square 2
+		square2.regs[0] = data;
+		square2.reg_written[0] = true;
+		break;
+
+	case 0x5006:
+		square2.regs[2] = data;
+		square2.reg_written[2] = true;
+		break;
+
+	case 0x5007:
+		square2.regs[3] = data;
+		square2.reg_written[3] = true;
+		// load length counter
+		if (square2_enabled)
+			square2.length_counter = length_table[data >> 3];
+
+		// reset square phase
+		square2.phase = Nes_Square::phase_range - 1;
+		break;
+
 	case 0x5010:
 		pcm_mode = (data & 0x1) != 0;
 		irq_enable = (data & 0x80) != 0;
 		break;
+
 	case 0x5011: // DAC
 		// TODO
 		break;
 
 	case 0x5015:
 		// Channel enables
-		if (!(data & 0x1))
-			oscs[0]->length_counter = 0;
-		if (!(data & 0x2))
-			oscs[1]->length_counter = 0;
-
-		osc_enables = data;
+		square1_enabled = (data & 0x1) != 0;
+		square2_enabled = (data & 0x2) != 0;
+		if (!square1_enabled)
+			square1.length_counter = 0;
+		if (!square2_enabled)
+			square2.length_counter = 0;
 		break;
 
 #ifdef BLARGG_DEBUG_H

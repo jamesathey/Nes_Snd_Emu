@@ -42,7 +42,7 @@ public:
 	void reset();
 
 	// Same as set_output(), but for a particular channel
-	// 0: Square 1, 1: Square 2, 3: PCM
+	// 0: Square 1, 1: Square 2, 2: PCM
 	enum { osc_count = 3 };
 	void set_output(int chan, Blip_Buffer* buf);
 
@@ -65,25 +65,22 @@ private:
 	Nes_Mmc5_Apu(const Nes_Mmc5_Apu&);
 	Nes_Mmc5_Apu& operator = (const Nes_Mmc5_Apu&);
 
-	Nes_Osc* oscs[osc_count];
-
 #ifdef _MSC_VER
 	// These are truly private members, and we don't need the compiler
 	// to complain "needs to have dll-interface to be used by clients of class"
 #pragma warning(push)
 #pragma warning(disable : 4251)
 #endif
-	Nes_Square          square1;
-	Nes_Square          square2;
+	Nes_Square square1;
+	Nes_Square square2;
 	// Nes_Mmc5_Pcm pcm;
 
 	double tempo_;
 	blip_time_t last_time; // has been run until this time in current frame
 	int frame_period;
 	int frame_delay; // cycles until frame counter runs next
-	int frame; // current frame (0-3)
-	int osc_enables;
-	int frame_mode;
+	bool square1_enabled;
+	bool square2_enabled;
 	enum PcmMode { WRITE_MODE, READ_MODE };
 	bool pcm_mode;
 	bool irq_enable;
