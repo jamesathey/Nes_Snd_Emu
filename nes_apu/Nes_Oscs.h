@@ -1,9 +1,6 @@
 // Private oscillators used by Nes_Apu
+#pragma once
 
-#ifndef NES_OSCS_H
-#define NES_OSCS_H
-
-#include "blargg_common.h"
 #include "Blip_Buffer.h"
 
 class Nes_Apu;
@@ -143,5 +140,3 @@ struct Nes_Dmc : Nes_Osc
 	int count_reads( nes_time_t, nes_time_t* ) const;
 	nes_time_t next_read_time() const;
 };
-
-#endif

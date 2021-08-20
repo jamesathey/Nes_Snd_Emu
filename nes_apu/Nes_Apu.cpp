@@ -13,7 +13,6 @@
    Boston, MA 02110-1301 USA */
 
 #include "Nes_Apu.h"
-#include "blargg_source.h"
 
 int const amp_range = 15;
 
@@ -260,11 +259,11 @@ void Nes_Apu::end_frame( blip_time_t end_time )
 	
 	if ( next_irq != no_irq ) {
 		next_irq -= end_time;
-		check( next_irq >= 0 );
+		//check( next_irq >= 0 );
 	}
 	if ( dmc.next_irq != no_irq ) {
 		dmc.next_irq -= end_time;
-		check( dmc.next_irq >= 0 );
+		//check( dmc.next_irq >= 0 );
 	}
 	if ( earliest_irq_ != no_irq ) {
 		earliest_irq_ -= end_time;
@@ -386,8 +385,6 @@ uint8_t Nes_Apu::read_status( blip_time_t time )
 		irq_flag = false;
 		irq_changed();
 	}
-	
-	//dprintf( "%6d/%d Read $4015->$%02X\n", frame_delay, frame, result );
 	
 	return result;
 }

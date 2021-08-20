@@ -12,7 +12,6 @@ License along with this module; if not, write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA */
 
 #include <cstring>
-#include "blargg_source.h"
 
 void Nes_Fme7_Apu::reset()
 {
@@ -51,9 +50,9 @@ void Nes_Fme7_Apu::run_until( blip_time_t end_time )
 		
 		// check for unsupported mode
 		#ifndef NDEBUG
-			if ( (mode & 011) <= 001 && vol_mode & 0x1F )
-				dprintf( "FME7 used unimplemented sound mode: %02X, vol_mode: %02X\n",
-						mode, vol_mode & 0x1F );
+			//if ( (mode & 011) <= 001 && vol_mode & 0x1F )
+				//dprintf( "FME7 used unimplemented sound mode: %02X, vol_mode: %02X\n",
+						//mode, vol_mode & 0x1F );
 		#endif
 		
 		if ( (mode & 001) | (vol_mode & 0x10) )

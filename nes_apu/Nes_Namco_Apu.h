@@ -1,9 +1,6 @@
 // Namco 106 sound chip emulator
+#pragma once
 
-#ifndef NES_NAMCO_APU_H
-#define NES_NAMCO_APU_H
-
-#include "blargg_common.h"
 #include "Blip_Buffer.h"
 
 struct namco_state_t;
@@ -103,5 +100,3 @@ inline void Nes_Namco_Apu::write_data( blip_time_t time, uint8_t data )
 	run_until( time );
 	access() = data;
 }
-
-#endif

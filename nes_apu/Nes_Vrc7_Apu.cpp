@@ -6,8 +6,6 @@ extern "C" {
 
 #include <cstring>
 
-#include "blargg_source.h"
-
 int const period = 36; // NES CPU clocks per FM clock
 
 Nes_Vrc7_Apu::Nes_Vrc7_Apu()

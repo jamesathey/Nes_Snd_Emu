@@ -1,7 +1,5 @@
 // Konami VRC7 sound chip emulator
-
-#ifndef NES_VRC7_APU_H
-#define NES_VRC7_APU_H
+#pragma once
 
 #include <system_error>
 #include "Blip_Buffer.h"
@@ -84,5 +82,3 @@ inline void Nes_Vrc7_Apu::set_output( int i, Blip_Buffer* buf )
 inline void Nes_Vrc7_Apu::volume( double v ) { synth.volume( 1.0 / 3 / 4096 * v ); }
 
 inline void Nes_Vrc7_Apu::treble_eq( blip_eq_t const& eq ) { synth.treble_eq( eq ); }
-
-#endif

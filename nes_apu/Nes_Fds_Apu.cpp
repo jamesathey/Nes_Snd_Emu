@@ -12,7 +12,6 @@ License along with this module; if not, write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA */
 
 #include <cstring>
-#include "blargg_source.h"
 
 int const fract_range = 65536;
 
@@ -192,7 +191,7 @@ void Nes_Fds_Apu::run_until( blip_time_t final_end_time )
 				if ( mod_fract <= 0 )
 				{
 					mod_fract += fract_range;
-					check( (unsigned) mod_fract <= fract_range );
+					//check( (unsigned) mod_fract <= fract_range );
 					
 					static short const mod_table [8] = { 0, +1, +2, +4, 0, -4, -2, -1 };
 					int mod = mod_wave [mod_pos];
@@ -253,13 +252,13 @@ void Nes_Fds_Apu::run_until( blip_time_t final_end_time )
 					}
 					
 					wave_fract += fract_range - delay * freq;
-					check( unsigned (fract_range - wave_fract) < freq );
+					//check( unsigned (fract_range - wave_fract) < freq );
 					
 					// delay until next clock
 					delay = min_delay;
 					if ( wave_fract > min_fract )
 						delay++;
-					check( delay && delay == (wave_fract + freq - 1) / freq );
+					//check( delay && delay == (wave_fract + freq - 1) / freq );
 					
 					time += delay;
 				}
@@ -268,12 +267,12 @@ void Nes_Fds_Apu::run_until( blip_time_t final_end_time )
 				this->wave_pos = wave_pos;
 			}
 			this->wave_fract = wave_fract - (end_time - (time - delay)) * freq;
-			check( this->wave_fract > 0 );
+			//check( this->wave_fract > 0 );
 		}
 		while ( end_time < final_end_time );
 		
-		env_delay   = env_time   - final_end_time; check( env_delay >= 0 );
-		sweep_delay = sweep_time - final_end_time; check( sweep_delay >= 0 );
+		env_delay   = env_time   - final_end_time; //check( env_delay >= 0 );
+		sweep_delay = sweep_time - final_end_time; //check( sweep_delay >= 0 );
 	}
 	last_time = final_end_time;
 }

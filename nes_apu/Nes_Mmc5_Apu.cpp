@@ -13,7 +13,6 @@
    Boston, MA 02110-1301 USA */
 
 #include "Nes_Mmc5_Apu.h"
-#include "blargg_source.h"
 
 int const amp_range = 15;
 
@@ -242,11 +241,6 @@ void Nes_Mmc5_Apu::write_register(blip_time_t time, uint16_t addr, uint8_t data)
 		if (!square2_enabled)
 			square2.length_counter = 0;
 		break;
-
-#ifdef BLARGG_DEBUG_H
-	default:
-		dprintf("Unmapped MMC5 APU write: $%04X <- $%02X\n", addr, data);
-#endif
 	}
 }
 

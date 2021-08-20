@@ -15,7 +15,6 @@ SET(PACKAGE_STRING "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 SET(NES_SND_EMU_SOURCES
 	emu2413/emu2413.c
 	nes_apu/Blip_Buffer.cpp
-	nes_apu/gme_custom_dprintf.c
 	nes_apu/Multi_Buffer.cpp
 	nes_apu/Nes_Apu.cpp
 	nes_apu/Nes_Fds_Apu.cpp
@@ -25,17 +24,14 @@ SET(NES_SND_EMU_SOURCES
 	nes_apu/Nes_Oscs.cpp
 	nes_apu/Nes_Vrc6_Apu.cpp
 	nes_apu/Nes_Vrc7_Apu.cpp
-	nes_apu/panning.c
 )
 
 SET(NES_SND_EMU_HEADERS
 	emu2413/emu2413.h
-	nes_apu/blargg_common.h
-	nes_apu/blargg_source.h
 	nes_apu/Blip_Buffer.h
 	nes_apu/Blip_Buffer_impl.h
 	nes_apu/Blip_Buffer_impl2.h
-	nes_apu/gme_custom_dprintf.h
+	nes_apu/dllexport.h
 	nes_apu/Multi_Buffer.h
 	nes_apu/Nes_Apu.h
 	nes_apu/Nes_Fds_Apu.h
@@ -45,7 +41,6 @@ SET(NES_SND_EMU_HEADERS
 	nes_apu/Nes_Oscs.h
 	nes_apu/Nes_Vrc6_Apu.h
 	nes_apu/Nes_Vrc7_Apu.h
-	nes_apu/panning.h
 )
 
 SET(NES_SND_EMU_DOCS
@@ -55,7 +50,7 @@ SET(NES_SND_EMU_DOCS
 ADD_LIBRARY(Nes_Snd_Emu SHARED ${NES_SND_EMU_SOURCES} ${NES_SND_EMU_HEADERS} ${NES_SND_EMU_DOCS})
 SET_TARGET_PROPERTIES(Nes_Snd_Emu PROPERTIES VERSION ${VERSION})
 TARGET_INCLUDE_DIRECTORIES(Nes_Snd_Emu PUBLIC ${PROJECT_SOURCE_DIR} emu2413)
-TARGET_COMPILE_DEFINITIONS(Nes_Snd_Emu PUBLIC BLARGG_DYNAMIC PRIVATE BLARGG_BUILD)
+TARGET_COMPILE_DEFINITIONS(Nes_Snd_Emu PUBLIC NES_SND_DYNAMIC PRIVATE NES_SND_BUILD)
 TARGET_COMPILE_FEATURES(Nes_Snd_Emu PUBLIC cxx_std_11)
 IF(MSVC)
 	# windows.h defines min and max, and std::min and std::max aren't defined in <algorithm> without this macro

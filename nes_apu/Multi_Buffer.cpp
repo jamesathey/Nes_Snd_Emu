@@ -12,7 +12,6 @@ License along with this module; if not, write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA */
 
 #include <algorithm>
-#include "blargg_source.h"
 
 Multi_Buffer::Multi_Buffer( int spf ) : samples_per_frame_( spf )
 {

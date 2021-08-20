@@ -11,8 +11,6 @@ details. You should have received a copy of the GNU Lesser General Public
 License along with this module; if not, write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA */
 
-#include "blargg_source.h"
-
 Nes_Namco_Apu::Nes_Namco_Apu()
 {
 	set_output( nullptr );
@@ -43,6 +41,12 @@ void Nes_Namco_Apu::set_output( Blip_Buffer* buf )
 	for ( int i = 0; i < osc_count; ++i )
 		set_output( i, buf );
 }
+
+/* BLARGG_4CHAR('a','b','c','d') = 'abcd' (four character integer constant).
+I don't just use 'abcd' because that's implementation-dependent. */
+#define BLARGG_4CHAR( a, b, c, d ) \
+	((a&0xFF)*0x1000000 + (b&0xFF)*0x10000 + (c&0xFF)*0x100 + (d&0xFF))
+
 
 /*
 void Nes_Namco_Apu::reflect_state( Tagged_Data& data )

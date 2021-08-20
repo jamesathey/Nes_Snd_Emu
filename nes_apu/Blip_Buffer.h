@@ -5,7 +5,7 @@
 
 #include <cstdint>
 #include <system_error>
-#include "blargg_common.h"
+#include "dllexport.h"
 #include "Blip_Buffer_impl.h"
 
 typedef int blip_time_t;                    // Source clocks in current time frame

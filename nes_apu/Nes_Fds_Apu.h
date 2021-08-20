@@ -1,9 +1,6 @@
 // NES FDS sound chip emulator
+#pragma once
 
-#ifndef NES_FDS_APU_H
-#define NES_FDS_APU_H
-
-#include "blargg_common.h"
 #include "Blip_Buffer.h"
 
 class DLLEXPORT Nes_Fds_Apu {
@@ -137,5 +134,3 @@ inline Nes_Fds_Apu::Nes_Fds_Apu()
 	volume( 1.0 );
 	reset();
 }
-
-#endif

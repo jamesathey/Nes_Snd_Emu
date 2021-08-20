@@ -1,9 +1,6 @@
 // NES 2A03 APU sound chip emulator
+#pragma once
 
-#ifndef NES_APU_H
-#define NES_APU_H
-
-#include "blargg_common.h"
 #include "Nes_Oscs.h"
 #include <functional>
 #include <climits>
@@ -180,5 +177,3 @@ inline Nes_Apu::nes_time_t Nes_Dmc::next_read_time() const
 }
 
 inline Nes_Apu::nes_time_t Nes_Apu::next_dmc_read_time() const { return dmc.next_read_time(); }
-
-#endif

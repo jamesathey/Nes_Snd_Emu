@@ -1,9 +1,6 @@
 // Sunsoft FME-7 sound emulator
+#pragma once
 
-#ifndef NES_FME7_APU_H
-#define NES_FME7_APU_H
-
-#include "blargg_common.h"
 #include "Blip_Buffer.h"
 
 struct fme7_apu_state_t
@@ -102,9 +99,6 @@ inline void Nes_Fme7_Apu::write_data( blip_time_t time, uint8_t data )
 {
 	if ( latch >= reg_count )
 	{
-		#ifdef dprintf
-			dprintf( "FME7 write to %02X (past end of sound registers)\n", (int) latch );
-		#endif
 		return;
 	}
 	
@@ -132,5 +126,3 @@ inline void Nes_Fme7_Apu::load_state( fme7_apu_state_t const& in )
 	fme7_apu_state_t* state = this;
 	*state = in;
 }
-
-#endif

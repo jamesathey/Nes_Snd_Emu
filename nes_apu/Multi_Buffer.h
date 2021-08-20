@@ -1,10 +1,7 @@
 // Multi-channel sound buffer interface, and basic mono and stereo buffers
-
-#ifndef MULTI_BUFFER_H
-#define MULTI_BUFFER_H
+#pragma once
 
 #include <system_error>
-#include "blargg_common.h"
 #include "Blip_Buffer.h"
 
 // Interface to one or more Blip_Buffers mapped to one or more channels
@@ -213,5 +210,3 @@ inline std::error_condition Silent_Buffer::set_sample_rate( int rate, int msec )
 {
 	return Multi_Buffer::set_sample_rate( rate, msec );
 }
-
-#endif

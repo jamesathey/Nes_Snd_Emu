@@ -11,8 +11,6 @@ details. You should have received a copy of the GNU Lesser General Public
 License along with this module; if not, write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA */
 
-#include "blargg_source.h"
-
 // Nes_Osc
 
 void Nes_Osc::clock_length( int halt_mask )
@@ -322,9 +320,9 @@ int Nes_Dmc::count_reads( nes_time_t time, nes_time_t* last_read ) const
 	if ( last_read )
 	{
 		*last_read = first_read + (count - 1) * (period * 8) + 1;
-		check( *last_read <= time );
-		check( count == count_reads( *last_read, nullptr ) );
-		check( count - 1 == count_reads( *last_read - 1, nullptr ) );
+		//check( *last_read <= time );
+		//check( count == count_reads( *last_read, nullptr ) );
+		//check( count - 1 == count_reads( *last_read - 1, nullptr ) );
 	}
 	
 	return count;

@@ -2,11 +2,7 @@
 // NES APU snapshot support
 
 // Nes_Snd_Emu 0.1.7. Copyright (C) 2003-2005 Shay Green. GNU LGPL license.
-
-#ifndef APU_SNAPSHOT_H
-#define APU_SNAPSHOT_H
-
-#include "blargg_common.h"
+#pragma once
 
 struct apu_snapshot_t
 {
@@ -70,6 +66,3 @@ struct apu_snapshot_t
 	void swap();
 };
 static_assert( sizeof (apu_snapshot_t) == 72, "apu_snapshot_t should be exactly 72 bytes");
-
-#endif
-
