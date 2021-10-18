@@ -147,7 +147,7 @@ int cpu_read_memory( cpu_addr_t addr )
 		return apu.read_status( cpu_time );
 }
 
-int dmc_read( void*, cpu_addr_t addr )
+int dmc_read( cpu_addr_t addr )
 {
 	return cpu_read_memory( addr );
 }
@@ -185,7 +185,7 @@ cpu_time_t earliest_irq_before( cpu_time_t end_time )
 }
 
 // IRQ time may have changed, so update CPU end time
-void irq_changed( void* )
+void irq_changed()
 {
 	cpu_end_time = earliest_irq_before( cpu_end_time );
 }
@@ -250,8 +250,8 @@ void init()
 	buf.clock_rate( 1789773 );
 	apu.output( &buf );
 	
-	apu.dmc_reader( dmc_read );
-	apu.irq_notifier( irq_changed );
+	apu.dmc_reader = dmc_read;
+	apu.irq_notifier = irq_changed;
 }
 ```
 
