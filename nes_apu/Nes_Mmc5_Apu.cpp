@@ -19,10 +19,9 @@ int const amp_range = 15;
 Nes_Mmc5_Apu::Nes_Mmc5_Apu() :
 	tempo_(1.0),
 	pcm_mode(WRITE_MODE),
-	irq_enable(false),
-	irq_flag(false),
 	square1(&square_synth, 0),
-	square2(&square_synth, 0)
+	square2(&square_synth, 0),
+	pcm(this)
 {
 	set_output(nullptr);
 	volume(1.0);
@@ -33,7 +32,7 @@ Nes_Mmc5_Apu::Nes_Mmc5_Apu() :
 void Nes_Mmc5_Apu::treble_eq(const blip_eq_t& eq)
 {
 	square_synth.treble_eq(eq);
-	//pcm.synth.treble_eq(eq);
+	pcm.synth.treble_eq(eq);
 }
 
 
@@ -41,7 +40,8 @@ void Nes_Mmc5_Apu::volume(double v)
 {
 	v *= 1.0 / 1.11; // TODO: merge into values below
 	square_synth.volume(0.125 / amp_range * v); // was 0.1128   1.108
-	// pcm.synth.volume(0.450 / 2048 * v); // was 0.42545  1.058
+	// TODO this PCM volume scale value is almost certainly wrong - it's probably not identical to DMC volume
+	pcm.synth.volume(0.450 / 2048 * v); // was 0.42545  1.058
 }
 
 
@@ -56,7 +56,7 @@ void Nes_Mmc5_Apu::set_output(int osc, Blip_Buffer* buf)
 		square2.output = buf;
 		break;
 	case 2:
-		//pcm.output = buf;
+		pcm.output = buf;
 		break;
 	}
 }
@@ -66,7 +66,7 @@ void Nes_Mmc5_Apu::set_output( Blip_Buffer* b )
 {
 	set_output( 0, b );
 	set_output( 1, b );
-	//set_output( 2, b );
+	set_output( 2, b );
 }
 
 
@@ -86,12 +86,11 @@ void Nes_Mmc5_Apu::reset()
 
 	square1.reset();
 	square2.reset();
-	//pcm.reset();
+	pcm.reset();
 
 	last_time = 0;
 	square1_enabled = false;
 	square2_enabled = false;
-	irq_flag = false;
 	frame_delay = 1;
 	write_register(0, 0x5015, 0);
 
@@ -139,16 +138,6 @@ void Nes_Mmc5_Apu::run_until_(blip_time_t end_time)
 		square1.clock_envelope();
 		square2.clock_envelope();
 	}
-}
-
-template<class T>
-inline void zero_apu_osc(T* osc, blip_time_t time)
-{
-	Blip_Buffer* output = osc->output;
-	int last_amp = osc->last_amp;
-	osc->last_amp = 0;
-	if (output && last_amp)
-		osc->synth.offset(time, -last_amp, output);
 }
 
 
@@ -225,11 +214,14 @@ void Nes_Mmc5_Apu::write_register(blip_time_t time, uint16_t addr, uint8_t data)
 
 	case 0x5010:
 		pcm_mode = (data & 0x1) != 0;
-		irq_enable = (data & 0x80) != 0;
+		pcm.irq_enabled = (data & 0x80) != 0;
 		break;
 
 	case 0x5011: // DAC
-		// TODO
+		if (pcm_mode == READ_MODE)
+			// writes are ignored in read mode
+			break;
+		pcm.write_dac(time, data);
 		break;
 
 	case 0x5015:
@@ -262,8 +254,53 @@ uint8_t Nes_Mmc5_Apu::read_irq_status(blip_time_t time)
 {
 	run_until_(time);
 	uint8_t result = pcm_mode;
-	if (irq_flag && irq_enable)
+	if (pcm.irq_flag && pcm.irq_enabled)
 		result |= 0x80;
-	irq_flag = false;
+	// reading $5010 acknowledges the IRQ and clears the flag
+	pcm.update_irq(false);
 	return result;
+}
+
+
+Nes_Mmc5_Pcm::Nes_Mmc5_Pcm(Nes_Mmc5_Apu* a) :
+	apu(a),
+	output(nullptr)
+{
+	reset();
+}
+
+
+void Nes_Mmc5_Pcm::reset()
+{
+	last_amp = 0;
+	irq_flag = false;
+	irq_enabled = false;
+}
+
+
+void Nes_Mmc5_Pcm::write_dac(blip_time_t time, uint8_t data)
+{
+	if (data == 0) {
+		// If you try to assign a value of $00, the DAC is not changed; an IRQ is generated instead.
+		update_irq(irq_enabled);
+	}
+	else {
+		// FIXME 16 is a very imprecise gain value, and it's linear
+		int in = (int)data * 16;
+		int delta = in - last_amp;
+		last_amp = in;
+		if (output && delta) {
+			output->set_modified();
+			synth.offset(time, delta, output);
+		}
+	}
+}
+
+
+void Nes_Mmc5_Pcm::update_irq(bool newIrq)
+{
+	bool old_irq = irq_flag;
+	irq_flag = newIrq;
+	if (old_irq != irq_flag && apu->irq_notifier)
+		apu->irq_notifier(irq_flag);
 }

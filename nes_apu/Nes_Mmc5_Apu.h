@@ -4,8 +4,30 @@
 #include "Nes_Oscs.h"
 #include "Blip_Buffer.h"
 
+#include <functional>
+
 struct apu_state_t;
 class Nes_Buffer;
+class Nes_Mmc5_Apu;
+
+// Nes_Dmc
+struct Nes_Mmc5_Pcm
+{
+	Nes_Mmc5_Pcm(Nes_Mmc5_Apu*);
+
+	bool irq_enabled;
+	bool irq_flag;
+	int last_amp;   // last amplitude oscillator was outputting
+
+	Nes_Mmc5_Apu* apu;
+	Blip_Buffer* output;
+
+	Blip_Synth_Fast synth;
+
+	void write_dac(blip_time_t time, uint8_t value);
+	void reset();
+	void update_irq(bool newIrq);
+};
 
 class DLLEXPORT Nes_Mmc5_Apu {
 public:
@@ -54,6 +76,20 @@ public:
 	// Sets treble equalization (see notes.txt)
 	void treble_eq(const blip_eq_t&);
 
+#ifdef _MSC_VER
+#pragma warning(push)
+	// prevents "warning C4251: 'Nes_Mmc5_Apu::irq_notifier': class 'std::function<void (bool)>' needs to have dll-interface to be used by clients of class 'Nes_Mmc5_Apu'"
+	// std::function<>, being a templated class inside of the STL, is guaranteed to generate code where needed for clients, because it's all in the header
+#pragma warning(disable : 4251)
+#endif
+	// IRQ callback that is invoked if the PCM IRQ is asserted (true) or deasserted.
+	// This IRQ line belongs to the cartridge, not the internal APU.
+	// Use std::bind to add custom parameters.
+	std::function<void(bool)> irq_notifier;
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+
 	// Implementation
 public:
 	Nes_Mmc5_Apu();
@@ -71,7 +107,7 @@ private:
 #endif
 	Nes_Square square1;
 	Nes_Square square2;
-	// Nes_Mmc5_Pcm pcm;
+	Nes_Mmc5_Pcm pcm;
 
 	double tempo_;
 	blip_time_t last_time; // has been run until this time in current frame
@@ -81,8 +117,6 @@ private:
 	bool square2_enabled;
 	enum PcmMode { WRITE_MODE, READ_MODE };
 	bool pcm_mode;
-	bool irq_enable;
-	bool irq_flag;
 	Nes_Square::Synth square_synth; // shared by squares
 #ifdef _MSC_VER
 #pragma warning(pop)
