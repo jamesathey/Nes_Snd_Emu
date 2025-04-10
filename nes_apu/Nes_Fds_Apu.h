@@ -1,15 +1,15 @@
 // NES FDS sound chip emulator
 #pragma once
 
-#include "Blip_Buffer.h"
+#include "Nes_Apu_Base.h"
 
-class DLLEXPORT Nes_Fds_Apu {
+class DLLEXPORT Nes_Fds_Apu : public Nes_Apu_Base {
 public:
 	// setup
 	void set_tempo( double );
 	enum { osc_count = 1 };
-	void set_output( Blip_Buffer* buf );
-	void volume( double );
+	void set_output( Blip_Buffer* buf ) override;
+	void volume( double ) override;
 	void treble_eq( blip_eq_t const& eq ) { synth.treble_eq( eq ); }
 	
 	// emulation
@@ -18,7 +18,7 @@ public:
 	enum { io_size = 0x53 };
 	void write( blip_time_t time, uint16_t addr, uint8_t data );
 	uint8_t read( blip_time_t time, uint16_t addr );
-	void end_frame( blip_time_t );
+	void end_frame( blip_time_t ) override;
 	
 public:
 	Nes_Fds_Apu();

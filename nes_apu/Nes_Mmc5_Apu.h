@@ -2,7 +2,7 @@
 #pragma once
 
 #include "Nes_Oscs.h"
-#include "Blip_Buffer.h"
+#include "Nes_Apu_Base.h"
 
 #include <functional>
 
@@ -29,9 +29,9 @@ struct Nes_Mmc5_Pcm
 	void update_irq(bool newIrq);
 };
 
-class DLLEXPORT Nes_Mmc5_Apu {
+class DLLEXPORT Nes_Mmc5_Apu : public Nes_Apu_Base {
 public:
-	void set_output(Blip_Buffer*);
+	void set_output(Blip_Buffer*) override;
 
 	enum { regs_addr = 0x5000 };
 	enum { regs_size = 0x16 };
@@ -56,7 +56,7 @@ public:
 	// Runs all oscillators up to specified time, ends current time frame, then
 	// starts a new time frame at time 0. Time frames have no effect on emulation
 	// and each can be whatever length is convenient.
-	void end_frame(blip_time_t);
+	void end_frame(blip_time_t) override;
 
 	// Resets internal frame counter, registers, and all oscillators.
 	void reset();
@@ -71,7 +71,7 @@ public:
 	void load_state(apu_state_t const&);
 
 	// Sets overall volume (default is 1.0)
-	void volume(double);
+	void volume(double) override;
 
 	// Sets treble equalization (see notes.txt)
 	void treble_eq(const blip_eq_t&);

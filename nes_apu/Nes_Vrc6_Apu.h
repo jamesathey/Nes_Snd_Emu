@@ -1,20 +1,20 @@
 // Konami VRC6 sound chip emulator
 #pragma once
 
-#include "Blip_Buffer.h"
+#include "Nes_Apu_Base.h"
 
 struct vrc6_apu_state_t;
 
-class DLLEXPORT Nes_Vrc6_Apu {
+class DLLEXPORT Nes_Vrc6_Apu : public Nes_Apu_Base {
 public:
 	// See Nes_Apu.h for reference
 	void reset();
-	void volume( double );
+	void volume( double ) override;
 	void treble_eq( blip_eq_t const& );
-	void set_output( Blip_Buffer* );
+	void set_output( Blip_Buffer* ) override;
 	enum { osc_count = 3 };
 	void set_output( int index, Blip_Buffer* );
-	void end_frame( blip_time_t );
+	void end_frame( blip_time_t ) override;
 	void save_state( vrc6_apu_state_t* ) const;
 	void load_state( vrc6_apu_state_t const& );
 	

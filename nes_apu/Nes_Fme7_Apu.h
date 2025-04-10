@@ -1,7 +1,7 @@
 // Sunsoft FME-7 sound emulator
 #pragma once
 
-#include "Blip_Buffer.h"
+#include "Nes_Apu_Base.h"
 
 struct fme7_apu_state_t
 {
@@ -12,16 +12,16 @@ struct fme7_apu_state_t
 	uint16_t delays [3]; // a, b, c
 };
 
-class DLLEXPORT Nes_Fme7_Apu : private fme7_apu_state_t {
+class DLLEXPORT Nes_Fme7_Apu : public Nes_Apu_Base, private fme7_apu_state_t {
 public:
 	// See Nes_Apu.h for reference
 	void reset();
-	void volume( double );
+	void volume( double ) override;
 	void treble_eq( blip_eq_t const& );
-	void set_output( Blip_Buffer* );
+	void set_output( Blip_Buffer* ) override;
 	enum { osc_count = 3 };
 	void set_output( int index, Blip_Buffer* );
-	void end_frame( blip_time_t );
+	void end_frame( blip_time_t ) override;
 	void save_state( fme7_apu_state_t* ) const;
 	void load_state( fme7_apu_state_t const& );
 	

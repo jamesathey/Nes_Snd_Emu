@@ -1,20 +1,20 @@
 // Namco 106 sound chip emulator
 #pragma once
 
-#include "Blip_Buffer.h"
+#include "Nes_Apu_Base.h"
 
 struct namco_state_t;
 
-class DLLEXPORT Nes_Namco_Apu {
+class DLLEXPORT Nes_Namco_Apu : public Nes_Apu_Base {
 public:
 	// See Nes_Apu.h for reference.
-	void volume( double );
+	void volume( double ) override;
 	void treble_eq( const blip_eq_t& );
-	void set_output( Blip_Buffer* );
+	void set_output( Blip_Buffer* ) override;
 	enum { osc_count = 8 };
 	void set_output( int index, Blip_Buffer* );
 	void reset();
-	void end_frame( blip_time_t );
+	void end_frame( blip_time_t ) override;
 	
 	// Read/write data register is at 0x4800
 	enum { data_reg_addr = 0x4800 };

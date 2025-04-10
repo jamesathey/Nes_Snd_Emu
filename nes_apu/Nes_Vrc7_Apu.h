@@ -2,22 +2,22 @@
 #pragma once
 
 #include <system_error>
-#include "Blip_Buffer.h"
+#include "Nes_Apu_Base.h"
 
 struct vrc7_snapshot_t;
 
-class DLLEXPORT Nes_Vrc7_Apu {
+class DLLEXPORT Nes_Vrc7_Apu : public Nes_Apu_Base {
 public:
 	std::error_condition init();
 
 	// See Nes_Apu.h for reference
 	void reset();
-	void volume( double );
+	void volume( double ) override;
 	void treble_eq( blip_eq_t const& );
-	void set_output( Blip_Buffer* );
+	void set_output( Blip_Buffer* ) override;
 	enum { osc_count = 6 };
 	void set_output( int index, Blip_Buffer* );
-	void end_frame( blip_time_t );
+	void end_frame( blip_time_t ) override;
 	void save_snapshot( vrc7_snapshot_t* ) const;
 	void load_snapshot( vrc7_snapshot_t const& );
 

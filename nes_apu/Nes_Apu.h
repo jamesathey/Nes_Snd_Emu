@@ -2,13 +2,14 @@
 #pragma once
 
 #include "Nes_Oscs.h"
+#include "Nes_Apu_Base.h"
 #include <functional>
 #include <climits>
 
 struct apu_state_t;
 class Nes_Buffer;
 
-class DLLEXPORT Nes_Apu {
+class DLLEXPORT Nes_Apu : public Nes_Apu_Base {
 public:
 // Basics
 
@@ -16,7 +17,7 @@ public:
 	
 	// Sets buffer to generate sound into, or 0 to mute output (reduces
 	// emulation accuracy).
-	void set_output( Blip_Buffer* );
+	void set_output( Blip_Buffer* ) override;
 	
 	// All time values are the number of CPU clock cycles relative to the
 	// beginning of the current time frame. Before resetting the CPU clock
@@ -34,7 +35,7 @@ public:
 	// Runs all oscillators up to specified time, ends current time frame, then
 	// starts a new time frame at time 0. Time frames have no effect on emulation
 	// and each can be whatever length is convenient.
-	void end_frame( nes_time_t );
+	void end_frame( nes_time_t ) override;
 	
 // Optional
 
@@ -57,7 +58,7 @@ public:
 	void load_state( apu_state_t const& );
 	
 	// Sets overall volume (default is 1.0)
-	void volume( double );
+	void volume( double ) override;
 	
 	// Sets treble equalization (see notes.txt)
 	void treble_eq( const blip_eq_t& );
